@@ -1,4 +1,5 @@
-
+Update 6/27/2021
+Added encryption/decyption feature!
 
 <p align="center">
   # gluong-datadeni
