@@ -12,5 +12,5 @@
     You can also change the .py file extension to .pyw to hide the terminal at runtime.
   </p>
   <p align='center'>
-  <img src="https://github.com/smarttarded/gluong-datadeni/blob/main/scrnshot.png" />
+  <img src="https://github.com/smarttarded/gluong-datadeni/blob/main/scrnshot.gif" />
 </p>
