@@ -9,6 +9,6 @@
 
     All imported libraries should come pre installed with the standard python installation.
   </p>
-  <p>
+  <p align='center'>
   <img src="https://github.com/smarttarded/gluong-datadeni/blob/main/scrnshot.png" />
 </p>
