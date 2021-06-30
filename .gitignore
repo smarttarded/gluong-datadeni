@@ -1,0 +1,56 @@
+# Prerequisites
+*.d
+*.txt
+*.key
+
+#JPEG
+*.jpeg
+*.jpg
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+<<<<<<< HEAD
+venv.bak/
+
+#ZIP files
+*.zip
+
+#JSCRIPT/*
+=======
+
+>>>>>>> 95797ce5cb7cf6716af7d05071ff1c4e94f61abe
