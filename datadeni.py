@@ -82,16 +82,16 @@ def hideFolder():
             return password
         elif(f'{password}' == ''):
             showinfo("DATADENI", "you must create a password.")
-            return None        
+            return None
         elif f'{password}' or f'{secFolder}' in readfile:
-            showinfo("DATADENI", "this password or folder is already registered.") 
+            showinfo("DATADENI", "this password or folder is already registered.")
             for files in os.listdir(f'{secFolder}'):
                 print("checkFolder " + files)
-                os.system("attrib +h " + files)   
+                os.system("attrib +h " + files)
             os.system("attrib +h " + f'{secFolder}')
             E1.delete(0, 'end')
         else:
-            open("logins.txt", "a").write(password + ' ' + secFolder + '\n') 
+            open("logins.txt", "a").write(password + ' ' + secFolder + '\n')
             os.system("attrib +h " + f'{secFolder}')
             E1.delete(0, 'end')
 
@@ -102,7 +102,7 @@ def readLogins():
     loginSet = password + folder
     #print(password + folder)
     return loginSet
-    
+
 def ButtonChk(button_id):
     if button_id == 1:
         return 1
@@ -117,12 +117,12 @@ def unhideFolder():
     passCheck2 = password2 + secFolder
     if(ButtonChk(2)):
         if(password2 == 'pluriselect'):
-            os.system("attrib -h " + f'{secFolder}') 
+            os.system("attrib -h " + f'{secFolder}')
             subprocess.check_call(["attrib","-H","logins.txt"])
         elif (passCheck.strip() == passCheck2.strip()):
             os.system("attrib -h " + f'{secFolder}')
         else:
-            showinfo("DATADENI", "the password for this folder didn't match.") 
+            showinfo("DATADENI", "the password for this folder didn't match.")
         E2.delete(0, 'end')
 
 def decryptFolder():
@@ -164,15 +164,15 @@ def encryptFolder():
         encrypted = fernet.encrypt(original)
         with open(os.path.join(dirname, filename), 'wb') as encrypted_file:
             encrypted_file.write(encrypted)
-    
+
 def only_numbers(char):
-    return char.isdigit() 
+    return char.isdigit()
 
 
 # def only_numbers2(char):
 #     only_numbers2.count += 1
 #     if only_numbers2.count <= 4:
-#         return char.isdigit() 
+#         return char.isdigit()
 #     else:
 #         return char == None
 # only_numbers2.count = 0
@@ -218,11 +218,11 @@ num7 = Button(root, text = "7", bg = "gray", command=lambda:setPin("7"))
 num7.config(height = 2, width = 5)
 num7.place(x= 190, y = 90)
 
-num8 = Button(root, text ="8", bg = "gray", command=lambda:setPin("7"))
+num8 = Button(root, text ="8", bg = "gray", command=lambda:setPin("8"))
 num8.config(height = 2, width = 5)
 num8.place(x= 190, y = 150)
 
-num9 = Button(root, text = "9", bg = "gray", command=lambda:setPin("8"))
+num9 = Button(root, text = "9", bg = "gray", command=lambda:setPin("9"))
 num9.config(height = 2, width = 5)
 num9.place(x= 190, y = 210)
 
@@ -271,5 +271,3 @@ def on_closing():
 root.protocol("WM_DELETE_WINDOW", on_closing)
 
 root.mainloop()
-
-
