@@ -11,11 +11,11 @@ from cryptography.fernet import Fernet
 root = tk.Tk()
 root.title("DATADENI")
 
-root.geometry("350x300")
+root.geometry("350x320")
 root.eval('tk::PlaceWindow . center')
 
-root.minsize(300, 270)
-root.maxsize(450, 370)
+root.minsize(300, 300)
+root.maxsize(450, 400)
 
 root.iconbitmap('favicon.ico')
 
@@ -195,47 +195,47 @@ def delete_entry(self):
 
 num1 = Button(root, text ="1", bg = "gray", command=lambda:setPin("1"))
 num1.config(height = 2, width = 5)
-num1.place(relx=.05, rely = .03)
+num1.place(relx=.05, rely = .02)
 
 num2 = Button(root, text = "2", bg = "gray", command=lambda:setPin("2"))
 num2.config(height = 2, width = 5)
-num2.place(relx=.05, rely = .23)
+num2.place(relx=.05, rely = .22)
 
 num3 = Button(root, text ="3", bg = "gray", command=lambda:setPin("3"))
 num3.config(height = 2, width = 5)
-num3.place(relx=.05, rely = .43)
+num3.place(relx=.05, rely = .42)
 
 num4 = Button(root, text = "4", bg = "gray", command=lambda:setPin("4"))
 num4.config(height = 2, width = 5)
-num4.place(relx=.05, rely = .63)
+num4.place(relx=.05, rely = .62)
 
 num5 = Button(root, text ="5", bg = "gray", command=lambda:setPin("5"))
 num5.config(height = 2, width = 5)
-num5.place(relx=.05, rely = .83)
+num5.place(relx=.05, rely = .82)
 
 num6 = Button(root, text ="6", bg = "gray", command=lambda:setPin("6"))
 num6.config(height = 2, width = 5)
-num6.place(relx=.23, rely = .03)
+num6.place(relx=.23, rely = .02)
 
 num7 = Button(root, text = "7", bg = "gray", command=lambda:setPin("7"))
 num7.config(height = 2, width = 5)
-num7.place(relx=.23, rely = .23)
+num7.place(relx=.23, rely = .22)
 
 num8 = Button(root, text ="8", bg = "gray", command=lambda:setPin("8"))
 num8.config(height = 2, width = 5)
-num8.place(relx=.23, rely = .43)
+num8.place(relx=.23, rely = .42)
 
 num9 = Button(root, text = "9", bg = "gray", command=lambda:setPin("9"))
 num9.config(height = 2, width = 5)
-num9.place(relx=.23, rely = .63)
+num9.place(relx=.23, rely = .62)
 
 num0 = Button(root, text ="0", bg = "gray", command=lambda:setPin("0"))
 num0.config(height = 2, width = 5)
-num0.place(relx=.23, rely = .83)
+num0.place(relx=.23, rely = .82)
 
 OM1 = tk.OptionMenu(root, folders, *dirArrayList)
 OM1["menu"].config(bg='#000000', fg='#ffffff')
-OM1.place(relx=.42, rely = .03, relwidth=0.4)
+OM1.place(relx=.42, rely = .02, relwidth=0.4)
 
 
 # L1 = tk.Label(root, borderwidth=2, bg='#000000', fg='#ffffff', relief='sunken', text="CREATE PIN")
@@ -248,19 +248,19 @@ OM1.place(relx=.42, rely = .03, relwidth=0.4)
 # L2 = tk.Label(root, borderwidth=2,  bg='#000000', fg='#ffffff', relief='sunken', text="ENTER PIN")
 # L2.place(relx=.4, rely = .13)
 E1 = tk.Entry(root,bg='#3F3F3F', fg='#37D028',bd =2, validate="key", textvariable=var, validatecommand=(validation, '%S'))
-E1.place(relx=.42, rely = .45, relwidth=0.4)
+E1.place(relx=.42, rely = .41, relwidth=0.4)
 
 hideimg = tk.PhotoImage(file ="hideimg.png")
 hidess = hideimg.subsample(6,6)
 Chk1 = tk.Button(root, image = hidess ,bg='#505050', fg='#37D028',padx=10, pady=5, command=lambda:[hideFolder(),ButtonChk(1)])
-Chk1.config(height = 35, width = 36)
-Chk1.place(relx=.72, rely = .63)
+Chk1.config(height = 40, width = 40)
+Chk1.place(relx=.72, rely = .62)
 
 unhideimg = tk.PhotoImage(file ="unhideimg.png")
 unhidess = unhideimg.subsample(6,6)
 Chk2 = tk.Button(root, image = unhidess,bg='#505050', fg='#37D028', padx=10, pady=5, command=lambda:[unhideFolder(),ButtonChk(2)])
-Chk2.config(height = 35, width = 36)
-Chk2.place(relx=.72, rely = .83)
+Chk2.config(height = 40, width = 40)
+Chk2.place(relx=.72, rely = .82)
 
 Chk1n = tk.Button(root, text="ENCRYPT",bg='#505050', fg='#37D028',padx=10, pady=5, command=encryptFolder)
 Chk1n.place(relx=.42, rely = .64)

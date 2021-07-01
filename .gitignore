@@ -51,6 +51,9 @@ venv.bak/
 *.zip
 
 #JSCRIPT/*
+
+#TestFolder
+TestFolder/*
 =======
 
 >>>>>>> 95797ce5cb7cf6716af7d05071ff1c4e94f61abe
