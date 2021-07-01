@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter.messagebox import showinfo
 from tkinter import *
-import os, stat
+import os
 from tkinter.constants import X
 import subprocess
 from cryptography.fernet import Fernet
