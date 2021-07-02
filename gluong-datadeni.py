@@ -5,7 +5,7 @@ import os
 from tkinter.constants import X
 import subprocess
 from cryptography.fernet import Fernet
-import numencripchun
+from numencripchun import *
 
 #MADE BY [khiem g luong].
 
@@ -49,15 +49,6 @@ root.after(0, update, 0)
 path = '.'
 dirArray = []
 
-def isPython(versionNumber): # Check the version of python running
-    import platform
-    return platform.python_version().startswith(str(versionNumber))
-
-def consoleReadLine(message): # Read a string from the console
-    if isPython(3): # Python 3.x code
-        return input(message)
-
-
 directory_contents = os.listdir(path)
 for item in directory_contents:
     if os.path.isdir(item):
@@ -65,54 +56,36 @@ for item in directory_contents:
         dirArray.append(item)
 
 for f in directory_contents:
-    if f.startswith('lib'):
+    if f.startswith('lib' or '.git'):
         dirArray.remove(f)
 
-open("logins.txt", "a")
-subprocess.check_call(["attrib","+H","logins.txt"])
+
+
 
 def hideFolder():
     secFolder = folders.get()
-    namer = open("logins.txt", "r")
-    readfile = namer.read()
     password = E1.get()
+    arr = os.walk(f'{secFolder}')
     if(ButtonChk(1)):
-        if(f'{password}' == '') and f'{secFolder}' in readfile:
-            showinfo("DATADENI", "Hiding folder with existing password")
-            os.system("attrib +h " + f'{secFolder}')
-            return password
-        elif(f'{password}' == ''):
+        for dirname, dirnames, filenames in arr:
+            for subdirname in dirnames:
+                print(os.path.join(dirname, subdirname))
+        for filename in filenames:
+            print(os.path.join(dirname, filename))
+        
+        if(f'{password}' == ''):
             showinfo("DATADENI", "you must create a password.")
             return None
-        elif f'{password}' or f'{secFolder}' in readfile:
-            showinfo("DATADENI", "this password or folder is already registered.")
+        else:
+            open(f'{secFolder}'+".hide", "a").write(password + ' ' + secFolder)
             for files in os.listdir(f'{secFolder}'):
                 print("checkFolder " + files)
                 os.system("attrib +h " + files)
             os.system("attrib +h " + f'{secFolder}')
-            E1.delete(0, 'end')
-        else:
-            open("logins.txt", "a").write(password + ' ' + secFolder + '\n')
-            os.system("attrib +h " + f'{secFolder}')
+            subprocess.check_call(["attrib","+H","f'{secFolder}'.hide"])
             E1.delete(0, 'end')
 
-def readLogins():
-    s1 = open("logins.txt", "r").read()
-    password = s1.split(' ')[0]
-    folder = s1.split(' ')[1]
-    loginSet = password + folder
-    #print(password + folder)
-    return loginSet
 
-def ButtonChk(button_id):
-    if button_id == 1:
-        return 1
-    if button_id == 2:
-        return 2
-
-def runDirectory(selection):
-    numencripchun.getfiles(selection)
-    
 
 def unhideFolder():
     passCheck = readLogins()
@@ -122,52 +95,56 @@ def unhideFolder():
     if(ButtonChk(2)):
         if(password2 == 'pluriselect'):
             os.system("attrib -h " + f'{secFolder}')
-            subprocess.check_call(["attrib","-H","logins.txt"])
+            subprocess.check_call(["attrib","-H","hidepass.txt"])
         elif (passCheck.strip() == passCheck2.strip()):
             os.system("attrib -h " + f'{secFolder}')
         else:
             showinfo("DATADENI", "the password for this folder didn't match.")
         E1.delete(0, 'end')
 
-def decryptFolder():
-    with open('mykey.key', 'rb') as mykey:
-        key = mykey.read()
-    fernet = Fernet(key)
-    secFolder = folders.get()
-    arr = os.walk(f'{secFolder}')
-    for dirname, dirnames, filenames in arr:
-        for subdirname in dirnames:
-            print(os.path.join(dirname, subdirname))
-    for filename in filenames:
-        print(os.path.join(dirname, filename))
-        f = open(os.path.join(dirname, filename), 'rb')
-        original = f.read()
-        print(original)
-        # with open (files, 'wb') as encrypted_file:
-        decrypted = fernet.decrypt(original)
-        with open(os.path.join(dirname, filename), 'wb') as decrypted_file:
-            decrypted_file.write(decrypted)
-
 def encryptFolder():
-    # key = Fernet.generate_key()
-    # with open('mykey.key', 'ab') as mykey:
-    #     mykey.write(key + b'\n')
-    #fernet = Fernet(key)
     secFolder = folders.get()
-
     arr = os.walk(f'{secFolder}')
     for dirname, dirnames, filenames in arr:
         for subdirname in dirnames:
             print(os.path.join(dirname, subdirname))
+
+    if(os.path.exists(f'{secFolder}'+'.key')):
+        showinfo("DATADENI", "there is already a encryption key for this folder.")
+        return None
+    else:
+        key = Fernet.generate_key()
+        with open(f'{secFolder}' + ".key", 'ab') as mykey:
+            mykey.write(key + b'\n')
+        fernet = Fernet(key)
+        for filename in filenames:
+            print(os.path.join(dirname, filename))
+            f = open(os.path.join(dirname, filename), 'rb')
+            original = f.read()
+            print(original)
+            encrypted = fernet.encrypt(original)
+            with open(os.path.join(dirname, filename), 'wb') as encrypted_file:
+                encrypted_file.write(encrypted)
+
+def decryptFolder():
+    secFolder = folders.get()
+    arr = os.walk(f'{secFolder}')
+
+    for dirname, dirnames, filenames in arr:
+        for subdirname in dirnames:
+            os.path.join(dirname, subdirname)
     for filename in filenames:
-        print(os.path.join(dirname, filename))
-        f = open(os.path.join(dirname, filename), 'rb')
-        original = f.read()
-        print(original)
-        # with open (files, 'wb') as encrypted_file:
-        # encrypted = fernet.encrypt(original)
-        # with open(os.path.join(dirname, filename), 'wb') as encrypted_file:
-        #     encrypted_file.write(encrypted)
+        if(os.path.exists(f'{secFolder}'+'.key')):
+            with open(f'{secFolder}' + ".key", 'rb') as mykey:
+                key = mykey.read()
+            fernet = Fernet(key)
+            f = open(os.path.join(dirname, filename), 'rb')
+            original = f.read()
+            decrypted = fernet.decrypt(original)
+            with open(os.path.join(dirname, filename), 'wb') as decrypted_file:
+                decrypted_file.write(decrypted)
+        else:
+            showinfo("DATADENI", "there is already a encryption key for this folder.")
 
 def only_numbers(char):
     return char.isdigit()
@@ -244,9 +221,9 @@ num0 = Button(root, text ="0", bg = "gray", command=lambda:setPin("0"))
 num0.config(height = 2, width = 5)
 num0.place(relx=.23, rely = .82)
 
-OM1 = tk.OptionMenu(root, folders, *dirArrayList, command=runDirectory)
+OM1 = tk.OptionMenu(root, folders, *dirArrayList)
 OM1["menu"].config(bg='#000000', fg='#ffffff')
-OM1.place(relx=.42, rely = .02, relwidth=0.4)
+OM1.place(relx=.41, rely = .02, relwidth=0.4)
 
 
 # L1 = tk.Label(root, borderwidth=2, bg='#000000', fg='#ffffff', relief='sunken', text="CREATE PIN")
@@ -259,29 +236,29 @@ OM1.place(relx=.42, rely = .02, relwidth=0.4)
 # L2 = tk.Label(root, borderwidth=2,  bg='#000000', fg='#ffffff', relief='sunken', text="ENTER PIN")
 # L2.place(relx=.4, rely = .13)
 E1 = tk.Entry(root,bg='#3F3F3F', fg='#37D028',bd =2, validate="key", textvariable=var, validatecommand=(validation, '%S'))
-E1.place(relx=.42, rely = .41, relwidth=0.4)
+E1.place(relx=.41, rely = .41, relwidth=0.4)
 
 hideimg = tk.PhotoImage(file ="hideimg.png")
 hidess = hideimg.subsample(6,6)
 Chk1 = tk.Button(root, image = hidess ,bg='#505050', fg='#37D028',padx=10, pady=5, command=lambda:[hideFolder(),ButtonChk(1)])
-Chk1.config(height = 40, width = 40)
-Chk1.place(relx=.72, rely = .62)
+Chk1.config(height = 36, width = 36)
+Chk1.place(relx=.71, rely = .62)
 
 unhideimg = tk.PhotoImage(file ="unhideimg.png")
 unhidess = unhideimg.subsample(6,6)
 Chk2 = tk.Button(root, image = unhidess,bg='#505050', fg='#37D028', padx=10, pady=5, command=lambda:[unhideFolder(),ButtonChk(2)])
-Chk2.config(height = 40, width = 40)
-Chk2.place(relx=.72, rely = .82)
+Chk2.config(height = 36, width = 36)
+Chk2.place(relx=.71, rely = .82)
 
 Chk1n = tk.Button(root, text="ENCRYPT",bg='#505050', fg='#37D028',padx=10, pady=5, command=encryptFolder)
-Chk1n.place(relx=.42, rely = .64)
+Chk1n.place(relx=.41, rely = .64)
 
 
 Chk3 = tk.Button(root, text="DECRYPT",bg='#505050', fg='#37D028',padx=10, pady=5, command=decryptFolder)
-Chk3.place(relx=.42, rely = .84)
+Chk3.place(relx=.41, rely = .84)
 
 def on_closing():
-    subprocess.check_call(["attrib","+H","logins.txt"])
+    subprocess.check_call(["attrib","+H","hidepass.txt"])
     root.destroy()
 
 root.protocol("WM_DELETE_WINDOW", on_closing)

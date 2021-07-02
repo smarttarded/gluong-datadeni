@@ -1,56 +1,81 @@
 import os
-import io
-from typing_extensions import TypeVarTuple
+  
+# take Input from the user 
+#query = input("Which drive you have to open ? C , D or E: \n")
+  
+# Check the condition for 
+# opening the C drive
+def keyPasser():
+    if(os.path.exists('D:')):
+        os.startfile("D:")
+    if(os.path.exists('E:')):
+        os.startfile("E:")
+    else:
+        return None
 
-def getfiles(selection):
-    dir = os.listdir(selection)
-    dirArr = os.walk(selection)
+def encripchun():
+    password = E1.get()
+    secFolder = folders.get()
+    dirArr = os.walk(f'{secFolder}')
+
     for dirname, dirnames, filenames in dirArr:
         for subdirname in dirnames:
             print(os.path.join(dirname, subdirname))
     for filename in filenames:
         filePath = os.path.join(dirname, filename)
         print(filePath)
-        f = open(filePath.split(), 'r')
-        file_contents = f.read()
-        print (file_contents)
 
-    # for file in dir:
-    #     print(file)
+    fin = open(filePath, 'rt', encoding='utf-8')
+    file_contents = fin.read()
+    fout = open(filePath, 'wt', encoding='utf-8')
 
+    for char in str(file_contents):
+        charInt = ord(char) + int(password)
+        decrypted = chr(charInt)
+        fout.write(char.replace(char, decrypted))
+    if(f'{password}' == ''):
+        showinfo("DATADENI", "you must create a password.")
+        return None
+    else:
+        E1.delete(0, 'end')
 
-# c='p'
-# x=ord(c)
-# #it will give you the ASCII value stored in x
-# print(x)'
+def decripchun():
+    password = E1.get()
+    secFolder = folders.get()
+    dirArr = os.walk(f'{secFolder}')
 
-fin = open('TestFolder/testtext.txt', 'rt', encoding='utf-8')
-file_contents = fin.read()
+    for dirname, dirnames, filenames in dirArr:
+        for subdirname in dirnames:
+            print(os.path.join(dirname, subdirname))
+    for filename in filenames:
+        filePath = os.path.join(dirname, filename)
+        print(filePath)
 
-fout = open('TestFolder/testtext.txt', 'wt', encoding='utf-8')
+    fin = open(filePath, 'rt', encoding='utf-8')
+    file_contents = fin.read()
+    fout = open(filePath, 'wt', encoding='utf-8')
 
-# teststr = 'amogus is sus?'
-# otherInt = 6
-# for char in str(file_contents):
-#     charInt = ord(char) + otherInt
-#     decrypted = chr(charInt)
-#     fout.write(char.replace(char, decrypted))
+    for char in str(file_contents):
+        charInt = ord(char) - int(password)
+        decrypted = chr(charInt)
+        fout.write(char.replace(char, decrypted))
+    if(f'{password}' == ''):
+        showinfo("DATADENI", "you must create a password.")
+        password = 0
+        return None
+    else:
+        E1.delete(0, 'end')
 
-otherInt = 6
-for char in str(file_contents):
-    charInt = ord(char) - otherInt
-    decrypted = chr(charInt)
-    fout.write(char.replace(char, decrypted))
+def readLogins():
+    s1 = open("hidepass.txt", "r").read()
+    password = s1.split(' ')[0]
+    folder = s1.split(' ')[1]
+    loginSet = password + folder
+    #print(password + folder)
+    return loginSet
 
-
-
-import usb.core
-
-devices = usb.core.find(find_all=True)
-
-dev = next(devices)
-
-print("device bus:", dev.bus)
-print("device address:", dev.address)
-print("device port:", dev.port_number)
-print("device speed:", dev.speed)
+def ButtonChk(button_id):
+    if button_id == 1:
+        return 1
+    if button_id == 2:
+        return 2
