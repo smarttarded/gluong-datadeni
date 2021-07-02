@@ -5,6 +5,7 @@ import os
 from tkinter.constants import X
 import subprocess
 from cryptography.fernet import Fernet
+import numencripchun
 
 #MADE BY [khiem g luong].
 
@@ -109,6 +110,9 @@ def ButtonChk(button_id):
     if button_id == 2:
         return 2
 
+def runDirectory(selection):
+    numencripchun.getfiles(selection)
+    
 
 def unhideFolder():
     passCheck = readLogins()
@@ -145,12 +149,12 @@ def decryptFolder():
             decrypted_file.write(decrypted)
 
 def encryptFolder():
-    key = Fernet.generate_key()
-    with open('mykey.key', 'ab') as mykey:
-        mykey.write(key + b'\n')
-
-    fernet = Fernet(key)
+    # key = Fernet.generate_key()
+    # with open('mykey.key', 'ab') as mykey:
+    #     mykey.write(key + b'\n')
+    #fernet = Fernet(key)
     secFolder = folders.get()
+
     arr = os.walk(f'{secFolder}')
     for dirname, dirnames, filenames in arr:
         for subdirname in dirnames:
@@ -161,9 +165,9 @@ def encryptFolder():
         original = f.read()
         print(original)
         # with open (files, 'wb') as encrypted_file:
-        encrypted = fernet.encrypt(original)
-        with open(os.path.join(dirname, filename), 'wb') as encrypted_file:
-            encrypted_file.write(encrypted)
+        # encrypted = fernet.encrypt(original)
+        # with open(os.path.join(dirname, filename), 'wb') as encrypted_file:
+        #     encrypted_file.write(encrypted)
 
 def only_numbers(char):
     return char.isdigit()
@@ -171,19 +175,17 @@ def only_numbers(char):
 def on_write(*args):
     s = var.get()
     if len(s) > 0:
-        if not s[-1].isdigit(): # retirar ultimo caracter caso nao seja digito
+        if not s[-1].isdigit(): 
             var.set(s[:-1])
-        else: # aproveitar apenas os primeiros 5 chars
+        else: 
             var.set(s[:max_len])
-
-max_len = 5 # maximo num de caracteres
+max_len = 5
 var = StringVar()
-var.trace("w", on_write) # rastrear valor da variavel e executar funcao de validacao quando mudar
-
+var.trace("w", on_write) 
 validation = root.register(only_numbers)
-folders = StringVar(root)
-folders.set(dirArray[0]) # default value
 
+folders = StringVar(root)
+folders.set(dirArray[0]) 
 dirArrayList = list(dirArray)
 
 def setPin(text):
@@ -192,6 +194,15 @@ def setPin(text):
 def delete_entry(self):
     self.entry.delete(0, 'end')
 
+# scroll_bar = Scrollbar(root)
+# scroll_bar.pack( side = RIGHT,
+#                 fill = Y )  
+# mylist = Listbox(root, 
+#                  yscrollcommand = scroll_bar.set ) 
+# for line in range(1, 26):
+#     mylist.insert(END, "Geeks " + str(line))
+# mylist.pack( side = LEFT, fill = BOTH )
+#scroll_bar.config( command = mylist.yview )
 
 num1 = Button(root, text ="1", bg = "gray", command=lambda:setPin("1"))
 num1.config(height = 2, width = 5)
@@ -233,7 +244,7 @@ num0 = Button(root, text ="0", bg = "gray", command=lambda:setPin("0"))
 num0.config(height = 2, width = 5)
 num0.place(relx=.23, rely = .82)
 
-OM1 = tk.OptionMenu(root, folders, *dirArrayList)
+OM1 = tk.OptionMenu(root, folders, *dirArrayList, command=runDirectory)
 OM1["menu"].config(bg='#000000', fg='#ffffff')
 OM1.place(relx=.42, rely = .02, relwidth=0.4)
 
