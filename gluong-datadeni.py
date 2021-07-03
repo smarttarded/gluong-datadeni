@@ -6,17 +6,18 @@ from tkinter.constants import X
 import subprocess
 from cryptography.fernet import Fernet
 from numencripchun import *
+import shutil
 
 #MADE BY [khiem g luong].
 
 root = tk.Tk()
 root.title("DATADENI")
 
-root.geometry("350x320")
+root.geometry("350x350")
 root.eval('tk::PlaceWindow . center')
 
-root.minsize(300, 300)
-root.maxsize(450, 400)
+root.minsize(350, 320)
+root.maxsize(450, 480)
 
 root.iconbitmap('favicon.ico')
 
@@ -43,7 +44,7 @@ def update(ind):
     imglabel.configure(image=frame)
     root.after(100, update, ind)
 imglabel = Label(root)
-imglabel.place(height=800, width=450,y=-220)
+imglabel.place(height=800, width=475,y=-220)
 root.after(0, update, 0)
 
 path = '.'
@@ -58,8 +59,6 @@ for item in directory_contents:
 for f in directory_contents:
     if f.startswith('lib' or '.git'):
         dirArray.remove(f)
-
-
 
 
 def hideFolder():
@@ -85,8 +84,6 @@ def hideFolder():
             subprocess.check_call(["attrib","+H","f'{secFolder}'.hide"])
             E1.delete(0, 'end')
 
-
-
 def unhideFolder():
     passCheck = readLogins()
     password2 = E1.get()
@@ -104,13 +101,20 @@ def unhideFolder():
 
 def encryptFolder():
     secFolder = folders.get()
+    driver = drivers.get().strip()
     arr = os.walk(f'{secFolder}')
+    key_dst = os.path.realpath(driver)
+    #print("keydst " + key_dst + (f'{secFolder}' + ".key"))
     for dirname, dirnames, filenames in arr:
         for subdirname in dirnames:
             print(os.path.join(dirname, subdirname))
-
-    if(os.path.exists(f'{secFolder}'+'.key')):
-        showinfo("DATADENI", "there is already a encryption key for this folder.")
+    for drive in driveArr:
+        print(drive)
+        if(os.path.isfile(drive+ (f'{secFolder}' + ".key"))):
+            showinfo("DATADENI", "there is already an encryption kee in one of the listed drives.")
+            return None
+    if(driver == "KEE"):
+        showinfo("DATADENI", "you must select a kee drive for encryption.")
         return None
     else:
         key = Fernet.generate_key()
@@ -118,33 +122,46 @@ def encryptFolder():
             mykey.write(key + b'\n')
         fernet = Fernet(key)
         for filename in filenames:
-            print(os.path.join(dirname, filename))
             f = open(os.path.join(dirname, filename), 'rb')
             original = f.read()
-            print(original)
+            source_path = os.path.join(dirname, filename)
+            print("source path: " + source_path)
             encrypted = fernet.encrypt(original)
             with open(os.path.join(dirname, filename), 'wb') as encrypted_file:
                 encrypted_file.write(encrypted)
+            key_src = (os.getcwd() + ('\\' f'{secFolder}' + ".key"))
+        shutil.move(src=key_src, dst=key_dst) 
 
 def decryptFolder():
     secFolder = folders.get()
-    arr = os.walk(f'{secFolder}')
-
-    for dirname, dirnames, filenames in arr:
-        for subdirname in dirnames:
-            os.path.join(dirname, subdirname)
-    for filename in filenames:
-        if(os.path.exists(f'{secFolder}'+'.key')):
-            with open(f'{secFolder}' + ".key", 'rb') as mykey:
-                key = mykey.read()
-            fernet = Fernet(key)
-            f = open(os.path.join(dirname, filename), 'rb')
-            original = f.read()
-            decrypted = fernet.decrypt(original)
-            with open(os.path.join(dirname, filename), 'wb') as decrypted_file:
-                decrypted_file.write(decrypted)
+    driver = drivers.get().strip()
+    arrFolder = os.walk(f'{secFolder}')
+    if(driver == "KEE"):
+        showinfo("DATADENI", "you must select a key drive for decryption.")
+    else:
+        drive_contents = os.listdir(driver)
+        drive_keyloc = driver + '\\' + (f'{secFolder}' + ".key")
+        if(os.path.isfile(drive_keyloc)):
+            print(drive_keyloc)
         else:
-            showinfo("DATADENI", "there is already a encryption key for this folder.")
+            print("key not found in drive")
+            print(drive_contents)
+        #if(driver)
+        # for dirname, dirnames, filenames in arrFolder:
+        #     for subdirname in dirnames:
+        #         os.path.join(dirname, subdirname)
+        # for filename in filenames:
+        #     if(os.path.exists(f'{secFolder}'+'.key')):
+        #         with open(f'{secFolder}' + ".key", 'rb') as mykey:
+        #             key = mykey.read()
+        #         fernet = Fernet(key)
+        #         f = open(os.path.join(dirname, filename), 'rb')
+        #         original = f.read()
+        #         decrypted = fernet.decrypt(original)
+        #         with open(os.path.join(dirname, filename), 'wb') as decrypted_file:
+        #             decrypted_file.write(decrypted)
+        #     else:
+        #         showinfo("DATADENI", "there is already a encryption key for this folder.")
 
 def only_numbers(char):
     return char.isdigit()
@@ -161,15 +178,28 @@ var = StringVar()
 var.trace("w", on_write) 
 validation = root.register(only_numbers)
 
-folders = StringVar(root)
-folders.set(dirArray[0]) 
-dirArrayList = list(dirArray)
+driveArr = []
+def keyPasser():
+    if(os.path.exists('D:')):
+        driveArr.append('D:')
+    if(os.path.exists('E:')):
+        #os.startfile("E:")
+        driveArr.append('E:')
+    if(os.path.exists('F:')):
+        driveArr.append('F:')
+    else:
+        return 
+keyPasser()
+
+driveArrayList = list(driveArr)
+drivers = StringVar(root)
+drivers.set('KEE')
+OM0 = tk.OptionMenu(root, drivers,*driveArrayList)
+OM0["menu"].config(bg='#000000', fg='#ffffff')
+OM0.place(relx=.82, rely = .02, width=60)
 
 def setPin(text):
     E1.insert(END, text)
-
-def delete_entry(self):
-    self.entry.delete(0, 'end')
 
 # scroll_bar = Scrollbar(root)
 # scroll_bar.pack( side = RIGHT,
@@ -221,10 +251,12 @@ num0 = Button(root, text ="0", bg = "gray", command=lambda:setPin("0"))
 num0.config(height = 2, width = 5)
 num0.place(relx=.23, rely = .82)
 
+folders = StringVar(root)
+folders.set(dirArray[0]) 
+dirArrayList = list(dirArray)
 OM1 = tk.OptionMenu(root, folders, *dirArrayList)
 OM1["menu"].config(bg='#000000', fg='#ffffff')
-OM1.place(relx=.41, rely = .02, relwidth=0.4)
-
+OM1.place(relx=.41, rely = .02, relwidth=0.38)
 
 # L1 = tk.Label(root, borderwidth=2, bg='#000000', fg='#ffffff', relief='sunken', text="CREATE PIN")
 # L1.place(relx=.4, rely = .13)
@@ -236,19 +268,19 @@ OM1.place(relx=.41, rely = .02, relwidth=0.4)
 # L2 = tk.Label(root, borderwidth=2,  bg='#000000', fg='#ffffff', relief='sunken', text="ENTER PIN")
 # L2.place(relx=.4, rely = .13)
 E1 = tk.Entry(root,bg='#3F3F3F', fg='#37D028',bd =2, validate="key", textvariable=var, validatecommand=(validation, '%S'))
-E1.place(relx=.41, rely = .41, relwidth=0.4)
+E1.place(relx=.41, rely = .41, relwidth=0.38)
 
 hideimg = tk.PhotoImage(file ="hideimg.png")
 hidess = hideimg.subsample(6,6)
 Chk1 = tk.Button(root, image = hidess ,bg='#505050', fg='#37D028',padx=10, pady=5, command=lambda:[hideFolder(),ButtonChk(1)])
-Chk1.config(height = 36, width = 36)
-Chk1.place(relx=.71, rely = .62)
+Chk1.config(height = 40, width = 40)
+Chk1.place(relx=.71, rely = .63)
 
 unhideimg = tk.PhotoImage(file ="unhideimg.png")
 unhidess = unhideimg.subsample(6,6)
 Chk2 = tk.Button(root, image = unhidess,bg='#505050', fg='#37D028', padx=10, pady=5, command=lambda:[unhideFolder(),ButtonChk(2)])
-Chk2.config(height = 36, width = 36)
-Chk2.place(relx=.71, rely = .82)
+Chk2.config(height = 40, width = 40)
+Chk2.place(relx=.71, rely = .83)
 
 Chk1n = tk.Button(root, text="ENCRYPT",bg='#505050', fg='#37D028',padx=10, pady=5, command=encryptFolder)
 Chk1n.place(relx=.41, rely = .64)
