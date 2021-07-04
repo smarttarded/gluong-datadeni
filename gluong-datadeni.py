@@ -18,8 +18,8 @@ root.title("DATADENI-GLUONG")
 root.geometry("350x350")
 root.eval('tk::PlaceWindow . center')
 
-root.minsize(350, 320)
-root.maxsize(450, 450)
+root.minsize(310, 320)
+root.maxsize(400, 450)
 
 root.iconbitmap('favicon.ico')
 
@@ -203,7 +203,7 @@ drivers.set('KEE')
 OM0 = tk.OptionMenu(root, drivers,*driveArrayList)
 OM0["menu"].config(bg='#3F3F3F', fg='#ffffff')
 OM0.config(bg='#3F3F3F', fg='#ffffff')
-OM0.place(relx=.82, rely = .02, width=55, height=38)
+OM0.place(relx=.8, rely = .02, width=55, height=36)
 
 def setPin(text):
     E1.insert(END, text)
@@ -224,43 +224,43 @@ def getFolderPath():
 
 folderPath = StringVar()
 
-num1 = Button(root, fg="white", text ="1", bg = "gray", command=lambda:setPin("1"))
+num1 = Button(root, fg="white", text ="1", bg = "#3F3F3F", command=lambda:setPin("1"))
 num1.config(height = 2, width = 5)
 num1.place(relx=.04, rely = .02)
 
-num2 = Button(root, fg="white", text = "2", bg = "gray", command=lambda:setPin("2"))
+num2 = Button(root, fg="white", text = "2", bg = "#3F3F3F", command=lambda:setPin("2"))
 num2.config(height = 2, width = 5)
 num2.place(relx=.04, rely = .22)
 
-num3 = Button(root, fg="white", text ="3", bg = "gray", command=lambda:setPin("3"))
+num3 = Button(root, fg="white", text ="3", bg = "#3F3F3F", command=lambda:setPin("3"))
 num3.config(height = 2, width = 5)
 num3.place(relx=.04, rely = .42)
 
-num4 = Button(root, fg="white", text = "4", bg = "gray", command=lambda:setPin("4"))
+num4 = Button(root, fg="white", text = "4", bg = "#3F3F3F", command=lambda:setPin("4"))
 num4.config(height = 2, width = 5)
 num4.place(relx=.04, rely = .62)
 
-num5 = Button(root, fg="white", text ="5", bg = "gray", command=lambda:setPin("5"))
+num5 = Button(root, fg="white", text ="5", bg = "#3F3F3F", command=lambda:setPin("5"))
 num5.config(height = 2, width = 5)
 num5.place(relx=.04, rely = .82)
 
-num6 = Button(root, fg="white", text ="6", bg = "gray", command=lambda:setPin("6"))
+num6 = Button(root, fg="white", text ="6", bg = "#3F3F3F", command=lambda:setPin("6"))
 num6.config(height = 2, width = 5)
 num6.place(relx=.22, rely = .02)
 
-num7 = Button(root, fg="white", text = "7", bg = "gray", command=lambda:setPin("7"))
+num7 = Button(root, fg="white", text = "7", bg = "#3F3F3F", command=lambda:setPin("7"))
 num7.config(height = 2, width = 5)
 num7.place(relx=.22, rely = .22)
 
-num8 = Button(root, fg="white", text ="8", bg = "gray", command=lambda:setPin("8"))
+num8 = Button(root, fg="white", text ="8", bg = "#3F3F3F", command=lambda:setPin("8"))
 num8.config(height = 2, width = 5)
 num8.place(relx=.22, rely = .42)
 
-num9 = Button(root, fg="white", text = "9", bg = "gray", command=lambda:setPin("9"))
+num9 = Button(root, fg="white", text = "9", bg = "#3F3F3F", command=lambda:setPin("9"))
 num9.config(height = 2, width = 5)
 num9.place(relx=.22, rely = .62)
 
-num0 = Button(root, fg="white", text ="0", bg = "gray", command=lambda:setPin("0"))
+num0 = Button(root, fg="white", text ="0", bg = "#3F3F3F", command=lambda:setPin("0"))
 num0.config(height = 2, width = 5)
 num0.place(relx=.22, rely = .82)
 
@@ -275,23 +275,28 @@ E1 = tk.Entry(root,bg='#3F3F3F', fg='#37D028',bd =2, validate="key", textvariabl
 E1.place(relx=.4, rely = .41, relwidth=0.36)
 
 hideimg = tk.PhotoImage(file ="hideimg.png")
-hidess = hideimg.subsample(8,8)
-Chk1 = tk.Button(root, image = hidess ,bg='#505050', fg='#37D028',padx=10, pady=5, command=lambda:[hideFolder(),ButtonChk(1)])
-Chk1.config(height = 38, width = 38)
-Chk1.place(relx=.7, rely = .62)
+hidess = hideimg.subsample(6,6)
+Chk1 = tk.Button(root, image = hidess ,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge", command=lambda:[hideFolder(),ButtonChk(1)])
+Chk1.config(height = 32, width = 32)
+Chk1.place(relx=.65, rely = .62)
 
 unhideimg = tk.PhotoImage(file ="unhideimg.png")
-unhidess = unhideimg.subsample(8,8)
-Chk2 = tk.Button(root, image = unhidess,bg='#505050', fg='#37D028', padx=10, pady=5, command=lambda:[unhideFolder(),ButtonChk(2)])
-Chk2.config(height = 38, width = 38)
-Chk2.place(relx=.7, rely = .82)
+unhidess = unhideimg.subsample(6,6)
+Chk2 = tk.Button(root, image = unhidess,bg='#3F3F3F', fg='#37D028', padx=10, pady=5, borderwidth=3, relief="ridge",command=lambda:[unhideFolder(),ButtonChk(2)])
+Chk2.config(height = 32, width = 32)
+Chk2.place(relx=.65, rely = .82)
 
-Chk1n = tk.Button(root, text="ENCRYPT",bg='#505050', fg='#37D028',padx=10, pady=5, command=lambda:[encryptFolder(),ButtonChk(3)])
-Chk1n.place(relx=.4, rely = .64)
+lockimg = tk.PhotoImage(file ="lockimg.png")
+lockss = lockimg.subsample(6,6)
+Chk1n = tk.Button(root, image=lockss,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge",command=lambda:[encryptFolder(),ButtonChk(3)])
+Chk1n.config(height = 32, width = 32)
+Chk1n.place(relx=.4, rely = .62)
 
-
-Chk3 = tk.Button(root, text="DECRYPT",bg='#505050', fg='#37D028',padx=10, pady=5, command=lambda:[decryptFolder(),ButtonChk(4)])
-Chk3.place(relx=.4, rely = .84)
+unlockimg = tk.PhotoImage(file ="unlockimg.png")
+unlockss = unlockimg.subsample(6,6)
+Chk3 = tk.Button(root, image=unlockss,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge", command=lambda:[decryptFolder(),ButtonChk(4)])
+Chk3.config(height = 32, width = 32)
+Chk3.place(relx=.4, rely = .82)
 
 def on_closing():
     subprocess.check_call(["attrib","+H","hidepass.txt"])
