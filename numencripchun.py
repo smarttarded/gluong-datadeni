@@ -11,11 +11,13 @@ def readLogins():
 
 def ButtonChk(button_id):
     if button_id == 1:
-        print(button_id)
         return 1
     if button_id == 2:
-        print(button_id)
         return 2
+    if button_id == 3:
+        return 3
+    if button_id == 4:
+        return 4
 
 # import os
 # directory_path = os.getcwd()
@@ -76,3 +78,31 @@ def ButtonChk(button_id):
 #         return None
 #     else:
 #         E1.delete(0, 'end')
+
+# from tkinter import *
+# from tkinter import ttk
+# from tkinter import filedialog
+# import os
+
+# root = Tk()
+# root.title("DATADENI")
+
+# root.geometry("350x350")
+# root.eval('tk::PlaceWindow . center')
+
+# root.minsize(350, 320)
+# root.maxsize(450, 450)
+# dirArray2 = []
+# folderPath = StringVar()
+# folder_selected = filedialog.askdirectory()
+# folderPath.set(folder_selected)
+# directory_contents = os.listdir(folder_selected)
+# for item in directory_contents:
+#     if os.path.isdir(item):
+#         print(item)
+#         dirArray2.append(item)
+
+# print(dirArray2)
+
+
+# root.mainloop()
