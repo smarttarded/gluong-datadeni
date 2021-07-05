@@ -7,7 +7,6 @@ import os
 from tkinter.constants import X
 import subprocess
 from cryptography.fernet import Fernet
-from numencripchun import *
 import shutil
 
 #MADE BY [khiem g luong].
@@ -238,8 +237,6 @@ OM0.place(relx=.8, rely = .02, width=55, height=36)
 def setPin(text):
     E1.insert(END, text)
 
-
-
 num1 = Button(root, fg="white", text ="1", bg = "#3F3F3F", command=lambda:setPin("1"))
 num1.config(height = 2, width = 5)
 num1.place(relx=.04, rely = .02)
@@ -325,7 +322,8 @@ def getFolderPath():
     return dirArray
 
 folders = StringVar(root)
-OM1 = tk.OptionMenu(root, folders, *getFolderPath())
+dirArrayList = getFolderPath()
+OM1 = tk.OptionMenu(root, folders, *dirArrayList)
 OM1["menu"].config(bg='#3F3F3F', fg='#ffffff')
 OM1.config(bg='#3F3F3F', fg='#ffffff')
 OM1.place(relx=.4, rely = .02, relwidth=0.36, height= 36)
@@ -334,25 +332,29 @@ folders.set('')
 E1 = tk.Entry(root,bg='#3F3F3F', fg='#37D028',bd =2, validate="key", textvariable=var, validatecommand=(validation, '%S'))
 E1.place(relx=.4, rely = .41, relwidth=0.36)
 
-hideimg = tk.PhotoImage(file ="C:/Users/User1/github/gluong-datadeni/hideimg.png")
+def getImgRoot():
+    path = os.getcwd()
+    return path
+
+hideimg = tk.PhotoImage(file =f'{getImgRoot()}' + '\\' + "hideimg.png")
 hidess = hideimg.subsample(6,6)
 Chk1 = tk.Button(root, image = hidess ,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge", command=lambda:[hideFolder(),ButtonChk(1)])
 Chk1.config(height = 32, width = 32)
 Chk1.place(relx=.65, rely = .62)
 
-unhideimg = tk.PhotoImage(file ="C:/Users/User1/github/gluong-datadeni/unhideimg.png")
+unhideimg = tk.PhotoImage(file =f'{getImgRoot()}' + '\\' + "unhideimg.png")
 unhidess = unhideimg.subsample(6,6)
 Chk2 = tk.Button(root, image = unhidess,bg='#3F3F3F', fg='#37D028', padx=10, pady=5, borderwidth=3, relief="ridge",command=lambda:[unhideFolder(),ButtonChk(2)])
 Chk2.config(height = 32, width = 32)
 Chk2.place(relx=.65, rely = .82)
 
-lockimg = tk.PhotoImage(file ="C:/Users/User1/github/gluong-datadeni/lockimg.png")
+lockimg = tk.PhotoImage(file =f'{getImgRoot()}' + '\\' + "lockimg.png")
 lockss = lockimg.subsample(6,6)
 Chk1n = tk.Button(root, image=lockss,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge",command=lambda:[encryptFolder(),ButtonChk(3)])
 Chk1n.config(height = 32, width = 32)
 Chk1n.place(relx=.4, rely = .62)
 
-unlockimg = tk.PhotoImage(file ="C:/Users/User1/github/gluong-datadeni/unlockimg.png")
+unlockimg = tk.PhotoImage(file =f'{getImgRoot()}' + '\\' + "unlockimg.png")
 unlockss = unlockimg.subsample(6,6)
 Chk3 = tk.Button(root, image=unlockss,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge", command=lambda:[decryptFolder(),ButtonChk(4)])
 Chk3.config(height = 32, width = 32)
