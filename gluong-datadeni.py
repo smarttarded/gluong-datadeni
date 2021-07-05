@@ -14,7 +14,7 @@ import shutil
 root = tk.Tk()
 root.title("DATADENI-GLUONG")
 
-root.geometry("350x350")
+root.geometry("330x350")
 root.eval('tk::PlaceWindow . center')
 
 root.minsize(310, 350)
@@ -30,9 +30,10 @@ os.system("attrib +h " + 'matrix.gif')
 os.system("attrib +h " + 'lib')
 os.system("attrib +h " + 'python3.dll')
 os.system("attrib +h " + 'python39.dll')
-
-if os.path.exists('./mykey.key'):
-    os.system("attrib +h " + 'mykey.key')
+os.system("attrib +h " + 'hideimg.png')
+os.system("attrib +h " + 'unhideimg.png')
+os.system("attrib +h " + 'lockimg.png')
+os.system("attrib +h " + 'unlockimg.png')
 
 frameCnt = 27
 frames = [PhotoImage(file='C:/Users/User1/github/gluong-datadeni/matrix.gif',format = 'gif -index %i' %(i)) for i in range(frameCnt)]
@@ -47,7 +48,6 @@ def update(ind):
 imglabel = Label(root)
 imglabel.place(height=800, width=475,y=-220)
 root.after(0, update, 0)
-
 
 def hideFolder():
     if(ButtonChk(1)):
