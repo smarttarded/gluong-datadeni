@@ -55,6 +55,8 @@ venv.bak/
 #TestFolder
 TestFolder/*
 
+#setup.py
+setup.py
 *.pyc
 =======
 
