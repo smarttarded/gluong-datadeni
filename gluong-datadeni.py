@@ -10,6 +10,7 @@ from cryptography.fernet import Fernet
 import shutil
 
 #MADE BY [khiem g luong].
+#smarttarded.github.io
 
 root = tk.Tk()
 root.title("DATADENI-GLUONG")
@@ -22,7 +23,11 @@ root.maxsize(400, 350)
 
 root.iconbitmap('favicon.ico')
 
-bg_img = tk.PhotoImage(file="matrix.gif")
+def getImgRoot():
+    path = os.getcwd()
+    return path
+
+bg_img = tk.PhotoImage(file=f'{getImgRoot()}' + '\\' + 'matrix.gif')
 imglabel = tk.Label(root, image=bg_img)
 
 os.system("attrib +h " + 'favicon.ico')
@@ -36,7 +41,7 @@ os.system("attrib +h " + 'lockimg.png')
 os.system("attrib +h " + 'unlockimg.png')
 
 frameCnt = 27
-frames = [PhotoImage(file='C:/Users/User1/github/gluong-datadeni/matrix.gif',format = 'gif -index %i' %(i)) for i in range(frameCnt)]
+frames = [PhotoImage(file=f'{getImgRoot()}' + '\\' + 'matrix.gif',format = 'gif -index %i' %(i)) for i in range(frameCnt)]
 
 def update(ind):
     frame = frames[ind]
@@ -300,9 +305,29 @@ def progress():
         showinfo("DATADENI-GLUONG", 'encripted ' + f'{dirFileCount()}' + ' files')
         pb['value'] = 0
 
+hideimg = tk.PhotoImage(file =f'{getImgRoot()}' + '\\' + 'hideimg.png')
+hidess = hideimg.subsample(6,6)
+Chk1 = tk.Button(root, image = hidess ,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge", command=lambda:[hideFolder(),ButtonChk(1)])
+Chk1.config(height = 32, width = 32)
+Chk1.place(relx=.65, rely = .62)
 
-# value_label = tk.Label(root, text=update_progress_label())
-# value_label.place(relx=.4, rely = .48, relwidth=0.36)
+unhideimg = tk.PhotoImage(file =f'{getImgRoot()}' + '\\' + "unhideimg.png")
+unhidess = unhideimg.subsample(6,6)
+Chk2 = tk.Button(root, image = unhidess,bg='#3F3F3F', fg='#37D028', padx=10, pady=5, borderwidth=3, relief="ridge",command=lambda:[unhideFolder(),ButtonChk(2)])
+Chk2.config(height = 32, width = 32)
+Chk2.place(relx=.65, rely = .82)
+
+lockimg = tk.PhotoImage(file =f'{getImgRoot()}' + '\\' + "lockimg.png")
+lockss = lockimg.subsample(6,6)
+Chk1n = tk.Button(root, image=lockss,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge",command=lambda:[encryptFolder(),ButtonChk(3)])
+Chk1n.config(height = 32, width = 32)
+Chk1n.place(relx=.4, rely = .62)
+
+unlockimg = tk.PhotoImage(file =f'{getImgRoot()}' + '\\' + "unlockimg.png")
+unlockss = unlockimg.subsample(6,6)
+Chk3 = tk.Button(root, image=unlockss,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge", command=lambda:[decryptFolder(),ButtonChk(4)])
+Chk3.config(height = 32, width = 32)
+Chk3.place(relx=.4, rely = .82)
 
 def getFolderPath():
     dirArray = []
@@ -331,34 +356,6 @@ folders.set('')
 
 E1 = tk.Entry(root,bg='#3F3F3F', fg='#37D028',bd =2, validate="key", textvariable=var, validatecommand=(validation, '%S'))
 E1.place(relx=.4, rely = .41, relwidth=0.36)
-
-def getImgRoot():
-    path = os.getcwd()
-    return path
-
-hideimg = tk.PhotoImage(file =f'{getImgRoot()}' + '\\' + "hideimg.png")
-hidess = hideimg.subsample(6,6)
-Chk1 = tk.Button(root, image = hidess ,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge", command=lambda:[hideFolder(),ButtonChk(1)])
-Chk1.config(height = 32, width = 32)
-Chk1.place(relx=.65, rely = .62)
-
-unhideimg = tk.PhotoImage(file =f'{getImgRoot()}' + '\\' + "unhideimg.png")
-unhidess = unhideimg.subsample(6,6)
-Chk2 = tk.Button(root, image = unhidess,bg='#3F3F3F', fg='#37D028', padx=10, pady=5, borderwidth=3, relief="ridge",command=lambda:[unhideFolder(),ButtonChk(2)])
-Chk2.config(height = 32, width = 32)
-Chk2.place(relx=.65, rely = .82)
-
-lockimg = tk.PhotoImage(file =f'{getImgRoot()}' + '\\' + "lockimg.png")
-lockss = lockimg.subsample(6,6)
-Chk1n = tk.Button(root, image=lockss,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge",command=lambda:[encryptFolder(),ButtonChk(3)])
-Chk1n.config(height = 32, width = 32)
-Chk1n.place(relx=.4, rely = .62)
-
-unlockimg = tk.PhotoImage(file =f'{getImgRoot()}' + '\\' + "unlockimg.png")
-unlockss = unlockimg.subsample(6,6)
-Chk3 = tk.Button(root, image=unlockss,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge", command=lambda:[decryptFolder(),ButtonChk(4)])
-Chk3.config(height = 32, width = 32)
-Chk3.place(relx=.4, rely = .82)
 
 def on_closing():
     subprocess.check_call(["attrib","+H","hidepass.txt"])
