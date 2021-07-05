@@ -2,7 +2,7 @@ from genericpath import exists
 import tkinter as tk
 from tkinter.messagebox import showinfo
 from tkinter import *
-from tkinter import filedialog
+from tkinter import filedialog, ttk
 import os
 from tkinter.constants import X
 import subprocess
@@ -18,8 +18,8 @@ root.title("DATADENI-GLUONG")
 root.geometry("350x350")
 root.eval('tk::PlaceWindow . center')
 
-root.minsize(310, 320)
-root.maxsize(400, 450)
+root.minsize(310, 350)
+root.maxsize(400, 350)
 
 root.iconbitmap('favicon.ico')
 
@@ -36,7 +36,7 @@ if os.path.exists('./mykey.key'):
     os.system("attrib +h " + 'mykey.key')
 
 frameCnt = 27
-frames = [PhotoImage(file='matrix.gif',format = 'gif -index %i' %(i)) for i in range(frameCnt)]
+frames = [PhotoImage(file='C:/Users/User1/github/gluong-datadeni/matrix.gif',format = 'gif -index %i' %(i)) for i in range(frameCnt)]
 
 def update(ind):
     frame = frames[ind]
@@ -103,7 +103,7 @@ def encryptFolder():
         if(os.path.isfile(driver + '\\' + f'{secFolder}' + ".key")):
             showinfo("DATADENI-GLUONG", "reencripting.")   
             decryptFolder()  
-            os.remove(driver + '\\' + f'{secFolder}' + ".key")
+            dirFileCount()
             key = Fernet.generate_key()
             with open(f'{secFolder}' + ".key", 'ab') as mykey:
                 mykey.write(key + b'\n')
@@ -112,7 +112,7 @@ def encryptFolder():
                 f = open(os.path.join(dirname, filename), 'rb')
                 original = f.read()
                 source_path = os.path.join(dirname, filename)
-                print(os.stat(source_path).st_size) 
+                progress()
                 encrypted = fernet.encrypt(original)
                 with open(os.path.join(dirname, filename), 'wb') as encrypted_file:
                     encrypted_file.write(encrypted)
@@ -123,6 +123,7 @@ def encryptFolder():
                 showinfo("DATADENI-GLUONG", "there is already an encryption kee in one of the listed drives.")
                 return
         else:
+            dirFileCount()
             key = Fernet.generate_key()
             with open(f'{secFolder}' + ".key", 'ab') as mykey:
                 mykey.write(key + b'\n')
@@ -130,7 +131,7 @@ def encryptFolder():
             for filename in filenames:
                 f = open(os.path.join(dirname, filename), 'rb')
                 original = f.read()
-
+                progress()
                 encrypted = fernet.encrypt(original)
                 with open(os.path.join(dirname, filename), 'wb') as encrypted_file:
                     encrypted_file.write(encrypted)
@@ -159,16 +160,45 @@ def decryptFolder():
                         f = open(os.path.join(dirname, filename), 'rb')
                         original = f.read()
                         source_path = os.path.join(dirname, filename)
-                        print("source path: " + source_path)                  
+                        #print("source path: " + source_path)                  
                         decrypted = fernet.decrypt(original)
                         with open(os.path.join(dirname, filename), 'wb') as decrypted_file:
                             decrypted_file.write(decrypted)
                 os.remove(driver + '\\' + f'{secFolder}' + ".key")
 
-
+def ButtonChk(button_id):
+    if button_id == 1:
+        return 1
+    if button_id == 2:
+        return 2
+    if button_id == 3:
+        return 3
+    if button_id == 4:
+        return 4
+        
+def readLogins():
+    s1 = open("hidepass.txt", "r").read()
+    password = s1.split(' ')[0]
+    folder = s1.split(' ')[1]
+    loginSet = password + folder
+    #print(password + folder)
+    return loginSet
 
 def only_numbers(char):
     return char.isdigit()
+
+def getDirectory():
+    secFolder = folders.get()
+    path = os.path.abspath(f'{secFolder}')
+    return path
+            
+def dirFileCount():
+    count = 0
+    d = getDirectory()
+    for path in os.listdir(d):
+        if os.path.isfile(os.path.join(d, path)):
+            count += 1
+    return count
 
 def on_write(*args):
     s = var.get()
@@ -208,21 +238,7 @@ OM0.place(relx=.8, rely = .02, width=55, height=36)
 def setPin(text):
     E1.insert(END, text)
 
-def getFolderPath():
-    dirArray = []
-    folder_selected = filedialog.askdirectory()
-    folderPath.set(folder_selected)
-    directory_contents = os.listdir(folder_selected)
-    for item in directory_contents:
-        print(item)
-        if os.path.isdir(item):
-            dirArray.append(item)
-    for f in directory_contents:
-        if f.startswith('__' or 'lib'):
-            dirArray.remove(f)
-    return dirArray
 
-folderPath = StringVar()
 
 num1 = Button(root, fg="white", text ="1", bg = "#3F3F3F", command=lambda:setPin("1"))
 num1.config(height = 2, width = 5)
@@ -264,6 +280,50 @@ num0 = Button(root, fg="white", text ="0", bg = "#3F3F3F", command=lambda:setPin
 num0.config(height = 2, width = 5)
 num0.place(relx=.22, rely = .82)
 
+pb = ttk.Progressbar(
+    root,
+    style="red.Horizontal.TProgressbar",
+    orient='vertical',
+    mode='determinate',
+    length=180,
+)
+s = ttk.Style()
+s.theme_use('alt')
+s.configure("red.Horizontal.TProgressbar", foreground='red', background='red')
+pb.place(relx=.85, rely = .42)
+
+def update_progress_label():
+    return f"Current Progress: {pb['value']}%"
+
+def progress():
+    if pb['value'] < 100:
+        pb['value'] += 100 / dirFileCount()
+        # value_label['text'] = update_progress_label()
+    if pb['value'] > 99.9:
+        showinfo("DATADENI-GLUONG", 'encripted ' + f'{dirFileCount()}' + ' files')
+        pb['value'] = 0
+
+
+# value_label = tk.Label(root, text=update_progress_label())
+# value_label.place(relx=.4, rely = .48, relwidth=0.36)
+
+def getFolderPath():
+    dirArray = []
+    if not dirArray:
+        dirArray.clear()
+    folder_selected = filedialog.askdirectory()
+    folders.set(folder_selected)
+    sourcePath = folders.get()
+    os.chdir(sourcePath)
+    directory_contents = os.listdir(folder_selected)
+    for item in directory_contents:
+        if os.path.isdir(item):
+            dirArray.append(item)
+    for f in directory_contents:
+        if f.startswith('__' or 'lib'):
+            dirArray.remove(f)
+    return dirArray
+
 folders = StringVar(root)
 OM1 = tk.OptionMenu(root, folders, *getFolderPath())
 OM1["menu"].config(bg='#3F3F3F', fg='#ffffff')
@@ -274,25 +334,25 @@ folders.set('')
 E1 = tk.Entry(root,bg='#3F3F3F', fg='#37D028',bd =2, validate="key", textvariable=var, validatecommand=(validation, '%S'))
 E1.place(relx=.4, rely = .41, relwidth=0.36)
 
-hideimg = tk.PhotoImage(file ="hideimg.png")
+hideimg = tk.PhotoImage(file ="C:/Users/User1/github/gluong-datadeni/hideimg.png")
 hidess = hideimg.subsample(6,6)
 Chk1 = tk.Button(root, image = hidess ,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge", command=lambda:[hideFolder(),ButtonChk(1)])
 Chk1.config(height = 32, width = 32)
 Chk1.place(relx=.65, rely = .62)
 
-unhideimg = tk.PhotoImage(file ="unhideimg.png")
+unhideimg = tk.PhotoImage(file ="C:/Users/User1/github/gluong-datadeni/unhideimg.png")
 unhidess = unhideimg.subsample(6,6)
 Chk2 = tk.Button(root, image = unhidess,bg='#3F3F3F', fg='#37D028', padx=10, pady=5, borderwidth=3, relief="ridge",command=lambda:[unhideFolder(),ButtonChk(2)])
 Chk2.config(height = 32, width = 32)
 Chk2.place(relx=.65, rely = .82)
 
-lockimg = tk.PhotoImage(file ="lockimg.png")
+lockimg = tk.PhotoImage(file ="C:/Users/User1/github/gluong-datadeni/lockimg.png")
 lockss = lockimg.subsample(6,6)
 Chk1n = tk.Button(root, image=lockss,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge",command=lambda:[encryptFolder(),ButtonChk(3)])
 Chk1n.config(height = 32, width = 32)
 Chk1n.place(relx=.4, rely = .62)
 
-unlockimg = tk.PhotoImage(file ="unlockimg.png")
+unlockimg = tk.PhotoImage(file ="C:/Users/User1/github/gluong-datadeni/unlockimg.png")
 unlockss = unlockimg.subsample(6,6)
 Chk3 = tk.Button(root, image=unlockss,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge", command=lambda:[decryptFolder(),ButtonChk(4)])
 Chk3.config(height = 32, width = 32)
@@ -301,7 +361,6 @@ Chk3.place(relx=.4, rely = .82)
 def on_closing():
     subprocess.check_call(["attrib","+H","hidepass.txt"])
     root.destroy()
-
 root.protocol("WM_DELETE_WINDOW", on_closing)
 
 root.mainloop()
