@@ -39,6 +39,8 @@ os.system("attrib +h " + 'hideimg.png')
 os.system("attrib +h " + 'unhideimg.png')
 os.system("attrib +h " + 'lockimg.png')
 os.system("attrib +h " + 'unlockimg.png')
+os.system("attrib +h " + 'hidepass.txt')
+
 
 frameCnt = 27
 frames = [PhotoImage(file=f'{getImgRoot()}' + '\\' + 'matrix.gif',format = 'gif -index %i' %(i)) for i in range(frameCnt)]
@@ -75,8 +77,8 @@ def hideFolder():
 
 def unhideFolder():
     passCheck = readLogins()
-    password = E1.get()
-    secFolder = folders.get()
+    password = E1.get().strip()
+    secFolder = folders.get().strip()
     passCheck2 = password + secFolder
     if(ButtonChk(2)):
         if(password == '666'):
@@ -96,16 +98,17 @@ def encryptFolder():
     key_dst = os.path.realpath(driver)
     key_src = (os.getcwd() + ('\\' f'{secFolder}' + ".key"))
     if(ButtonChk(3)):
+        if(secFolder == ''):
+            showinfo("DATADENI-GLUONG", "you must select a folder for encryption.")
+            return
         for dirname, dirnames, filenames in arr:
             for subdirname in dirnames:
                 print(os.path.join(dirname, subdirname))
-        if(driver == "KEE"):
-            showinfo("DATADENI-GLUONG", "you must select a kee drive for encryption.")
-            return
-        if(driveArr == ''):
-            showinfo("DATADENI-GLUONG", "there are no drives to choose from.")     
+        if(driver == ''):
+            showinfo("DATADENI-GLUONG", "you must select a key drive for encryption.")
+            return 
         if(os.path.isfile(driver + '\\' + f'{secFolder}' + ".key")):
-            showinfo("DATADENI-GLUONG", "reencripting.")   
+            showinfo("DATADENI-GLUONG", "reencrypting.")   
             decryptFolder()  
             dirFileCount()
             key = Fernet.generate_key()
@@ -124,7 +127,7 @@ def encryptFolder():
             return
         for drive in driveArr:
             if(os.path.isfile(drive + (f'{secFolder}' + ".key"))):
-                showinfo("DATADENI-GLUONG", "there is already an encryption kee in one of the listed drives.")
+                showinfo("DATADENI-GLUONG", "there is already an encryption key in one of the listed drives.")
                 return
         else:
             dirFileCount()
@@ -147,8 +150,8 @@ def decryptFolder():
     driver = drivers.get().strip()
     arr = os.walk(f'{secFolder}')
     if(ButtonChk(4)):
-        if(driver == "KEE"):
-            showinfo("DATADENI-GLUONG", "you must select a kee drive for decryption.")
+        if(driver == ''):
+            showinfo("DATADENI-GLUONG", "you must select a key drive for decryption.")
             return
         else:
             with open((driver + '\\' + (f'{secFolder}' + ".key")), 'rb') as mykey:
@@ -169,6 +172,7 @@ def decryptFolder():
                         with open(os.path.join(dirname, filename), 'wb') as decrypted_file:
                             decrypted_file.write(decrypted)
                 os.remove(driver + '\\' + f'{secFolder}' + ".key")
+            return
 
 def ButtonChk(button_id):
     if button_id == 1:
@@ -185,7 +189,7 @@ def readLogins():
     password = s1.split(' ')[0]
     folder = s1.split(' ')[1]
     loginSet = password + folder
-    #print(password + folder)
+    print(password + folder)
     return loginSet
 
 def only_numbers(char):
@@ -217,28 +221,29 @@ var.trace("w", on_write)
 validation = root.register(only_numbers)
 
 driveArr = []
-def keyPasser():
-    if(os.path.exists('D:')):
-        driveArr.append('D:')
-    if(os.path.exists('E:')):
-        #os.startfile("E:")
-        driveArr.append('E:')
-    if(os.path.exists('F:')):
-        driveArr.append('F:')
-    if(os.path.exists('G:')):
-        driveArr.append('G:')
-    else:
-        return 
-keyPasser()
+
+driveArr.append('::::')
+if(os.path.exists('D:')):
+    driveArr.append('D:')
+    driveArr.remove('::::')
+if(os.path.exists('E:')):
+    #os.startfile("E:")
+    driveArr.append('E:')
+if(os.path.exists('F:')):
+    driveArr.append('F:')
+if(os.path.exists('G:')):
+    driveArr.append('G:')
 
 driveArrayList = list(driveArr)
 drivers = StringVar(root)
-drivers.set('KEE')
+
 OM0 = tk.OptionMenu(root, drivers,*driveArrayList)
 OM0["menu"].config(bg='#3F3F3F', fg='#ffffff')
 OM0.config(bg='#3F3F3F', fg='#ffffff')
 OM0.place(relx=.8, rely = .02, width=55, height=36)
 
+if(driveArr == ['::::']):
+    OM0.destroy()
 def setPin(text):
     E1.insert(END, text)
 
@@ -302,7 +307,7 @@ def progress():
         pb['value'] += 100 / dirFileCount()
         # value_label['text'] = update_progress_label()
     if pb['value'] > 99.9:
-        showinfo("DATADENI-GLUONG", 'encripted ' + f'{dirFileCount()}' + ' files')
+        showinfo("DATADENI-GLUONG", 'encrypted ' + f'{dirFileCount()}' + ' files')
         pb['value'] = 0
 
 hideimg = tk.PhotoImage(file =f'{getImgRoot()}' + '\\' + 'hideimg.png')
