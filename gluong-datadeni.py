@@ -27,7 +27,7 @@ def getImgRoot():
     path = os.getcwd()
     return path
 
-bg_img = tk.PhotoImage(file=f'{getImgRoot()}' + '\\' + 'matrix.gif')
+bg_img = tk.PhotoImage(file=f'{getImgRoot()}' + '\matrix.gif')
 imglabel = tk.Label(root, image=bg_img)
 
 os.system("attrib +h " + 'favicon.ico')
@@ -43,7 +43,7 @@ os.system("attrib +h " + 'hidepass.txt')
 
 
 frameCnt = 27
-frames = [PhotoImage(file=f'{getImgRoot()}' + '\\' + 'matrix.gif',format = 'gif -index %i' %(i)) for i in range(frameCnt)]
+frames = [PhotoImage(file=f'{getImgRoot()}' + '\matrix.gif',format = 'gif -index %i' %(i)) for i in range(frameCnt)]
 
 def update(ind):
     frame = frames[ind]
@@ -130,6 +130,10 @@ def encryptFolder():
                 showinfo("DATADENI-GLUONG", "there is already an encryption key in one of the listed drives.")
                 return
         else:
+            with open(f'{secFolder}' + '.txt', 'w') as f:
+                f.write('')
+            shutil.move(src=os.getcwd() + ('\\'f'{secFolder}' + '.txt'), dst=getDirectory())
+
             dirFileCount()
             key = Fernet.generate_key()
             with open(f'{secFolder}' + ".key", 'ab') as mykey:
@@ -143,7 +147,19 @@ def encryptFolder():
                 with open(os.path.join(dirname, filename), 'wb') as encrypted_file:
                     encrypted_file.write(encrypted)
             shutil.move(src=key_src, dst=key_dst) 
+            encryptPin()
             return
+
+def encryptPin():
+    pin = E1.get().strip()
+    secFolder = folders.get().strip()
+    for num in str(pin):
+        print(num)
+    oldname = os.getcwd() + '\\' + f'{secFolder}' + ('\\'f'{secFolder}' + '.txt')
+    newname = os.getcwd() + '\\' + f'{secFolder}' + ('\\'f'{pin}' + '.txt')
+    print(oldname)
+    os.rename(oldname, newname)
+    return
 
 def decryptFolder():
     secFolder = folders.get()
@@ -198,6 +214,7 @@ def only_numbers(char):
 def getDirectory():
     secFolder = folders.get()
     path = os.path.abspath(f'{secFolder}')
+    print(path)
     return path
             
 def dirFileCount():
