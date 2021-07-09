@@ -107,13 +107,10 @@ def encryptFolder():
                 print(os.path.join(dirname, subdirname))
         if(driver == ''):
             showinfo("DATADENI-GLUONG", "you must select a key drive for encryption.")
-            return 
-        if(os.path.isfile(os.getcwd() + '\\' + f'{secFolder}' + ('\\('f'{secFolder}' + ').txt')) and not(os.path.isfile(driver + '\\' + f'{secFolder}' + ".key"))):
-            showinfo("DATADENI-GLUONG", "this folder is already encrypted.")
             return             
         if(os.path.isfile(driver + '\\' + f'{secFolder}' + ".key")):
             showinfo("DATADENI-GLUONG", "reencrypting.")   
-            decryptFolder()  
+            redecryptFolder()  
             dirFileCount()
             key = Fernet.generate_key()
             with open(f'{secFolder}' + ".key", 'ab') as mykey:
@@ -128,6 +125,10 @@ def encryptFolder():
                 with open(os.path.join(dirname, filename), 'wb') as encrypted_file:
                     encrypted_file.write(encrypted)
             shutil.move(src=key_src, dst=key_dst) 
+            os.system("attrib +h " + (key_dst+ ('\\' f'{secFolder}' + ".key")))
+            return
+        if(os.path.isfile(os.getcwd() + '\\' + 'foldercache' + ('\\('f'{secFolder}' + ').txt'))):
+            showinfo("DATADENI-GLUONG", "this folder is already encrypted.") 
             return
         for drive in driveArr:
             if(os.path.isfile(drive + (f'{secFolder}' + ".key"))):
@@ -136,7 +137,7 @@ def encryptFolder():
         else:
             with open('(' + f'{secFolder}' + ').txt', 'w') as f:
                 f.write('')
-            shutil.move(src=os.getcwd() + ('\\('f'{secFolder}' + ').txt'), dst=getDirectory())
+            shutil.move(src=os.getcwd() + ('\\('f'{secFolder}' + ').txt'), dst=os.getcwd() + '\\' + 'foldercache' + ('\\('f'{secFolder}' + ').txt'))
             dirFileCount()
             key = Fernet.generate_key()
             with open(f'{secFolder}' + ".key", 'ab') as mykey:
@@ -149,7 +150,8 @@ def encryptFolder():
                 encrypted = fernet.encrypt(original)
                 with open(os.path.join(dirname, filename), 'wb') as encrypted_file:
                     encrypted_file.write(encrypted)
-            shutil.move(src=key_src, dst=key_dst) 
+            shutil.move(src=key_src, dst=key_dst)
+            os.system("attrib +h " + (key_dst+ ('\\' f'{secFolder}' + ".key")))
             encryptPin()
             return
 
@@ -179,7 +181,7 @@ def encryptPin():
     newPin3 = newPin2 * int(num3)
     newPinFinal = math.sqrt(newPin3)
     # print(str(int(newPinFinal)))
-    oldname = os.getcwd() + '\\' + f'{secFolder}' + ('\\('f'{secFolder}' + ').txt')
+    oldname = os.getcwd() + '\\' + 'foldercache' + ('\\('f'{secFolder}' + ').txt')
     # newname = os.getcwd() + '\\' + f'{secFolder}' + ('\\'f'{int(newPinFinal)}' + '.txt')
     with open(oldname, 'w') as f:
         f.write(f'{str(int(newPinFinal))}')
@@ -213,8 +215,40 @@ def decryptFolder():
                         with open(os.path.join(dirname, filename), 'wb') as decrypted_file:
                             decrypted_file.write(decrypted)
                 os.remove(driver + '\\' + f'{secFolder}' + ".key")
+                os.remove(os.getcwd() + '\\' + 'foldercache' + ('\\('f'{secFolder}' + ').txt'))
             return
 
+def redecryptFolder():
+    secFolder = folders.get()
+    driver = drivers.get().strip()
+    arr = os.walk(f'{secFolder}')
+    if(ButtonChk(4)):
+        if(driver == ''):
+            showinfo("DATADENI-GLUONG", "you must select a key drive for decryption.")
+            return
+        else:
+            with open((driver + '\\' + (f'{secFolder}' + ".key")), 'rb') as mykey:
+                key = mykey.read()
+            fernet = Fernet(key)
+            #drive_contents = os.listdir(driver)
+            drive_keyloc = driver + '\\' + (f'{secFolder}' + ".key")
+            if(os.path.isfile(drive_keyloc)):
+                for dirname, dirnames, filenames in arr:
+                    for subdirname in dirnames:
+                        print(os.path.join(dirname, subdirname))
+                    for filename in filenames:
+                        f = open(os.path.join(dirname, filename), 'rb')
+                        original = f.read()
+                        source_path = os.path.join(dirname, filename)
+                        #print("source path: " + source_path)                  
+                        decrypted = fernet.decrypt(original)
+                        with open(os.path.join(dirname, filename), 'wb') as decrypted_file:
+                            decrypted_file.write(decrypted)
+                os.remove(driver + '\\' + f'{secFolder}' + ".key")
+            return
+
+def DecryptPin():
+    pin = E1.get().strip()
 
 def ButtonChk(button_id):
     if button_id == 1:
@@ -393,7 +427,7 @@ def getFolderPath():
         if os.path.isdir(item):
             dirArray.append(item)
     for f in directory_contents:
-        if f.startswith('__' or 'lib'):
+        if f.startswith(('__','lib', 'foldercache')):
             dirArray.remove(f)
     return dirArray
 

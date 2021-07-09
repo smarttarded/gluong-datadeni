@@ -14,7 +14,7 @@ if sys.platform == "win32":
     base = "Win32GUI"
 
 setup(name="gluong-datadeni",
-      version="3.0",
+      version="3.5",
       description="hides and encrypts files from folders",
       options={"build_exe": build_exe_options},
       executables=[Executable(script="gluong-datadeni.py", base=base, icon="favicon.ico")])
