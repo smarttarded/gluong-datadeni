@@ -8,6 +8,7 @@ from tkinter.constants import X
 import subprocess
 from cryptography.fernet import Fernet
 import shutil
+import math
 
 #MADE BY [khiem g luong].
 #smarttarded.github.io
@@ -92,7 +93,7 @@ def unhideFolder():
             E1.delete(0, 'end')
 
 def encryptFolder():
-    secFolder = folders.get()
+    secFolder = folders.get().strip()
     driver = drivers.get().strip()
     arr = os.walk(f'{secFolder}')
     key_dst = os.path.realpath(driver)
@@ -107,6 +108,9 @@ def encryptFolder():
         if(driver == ''):
             showinfo("DATADENI-GLUONG", "you must select a key drive for encryption.")
             return 
+        if(os.path.isfile(os.getcwd() + '\\' + f'{secFolder}' + ('\\('f'{secFolder}' + ').txt')) and not(os.path.isfile(driver + '\\' + f'{secFolder}' + ".key"))):
+            showinfo("DATADENI-GLUONG", "this folder is already encrypted.")
+            return             
         if(os.path.isfile(driver + '\\' + f'{secFolder}' + ".key")):
             showinfo("DATADENI-GLUONG", "reencrypting.")   
             decryptFolder()  
@@ -130,10 +134,9 @@ def encryptFolder():
                 showinfo("DATADENI-GLUONG", "there is already an encryption key in one of the listed drives.")
                 return
         else:
-            with open(f'{secFolder}' + '.txt', 'w') as f:
+            with open('(' + f'{secFolder}' + ').txt', 'w') as f:
                 f.write('')
-            shutil.move(src=os.getcwd() + ('\\'f'{secFolder}' + '.txt'), dst=getDirectory())
-
+            shutil.move(src=os.getcwd() + ('\\('f'{secFolder}' + ').txt'), dst=getDirectory())
             dirFileCount()
             key = Fernet.generate_key()
             with open(f'{secFolder}' + ".key", 'ab') as mykey:
@@ -154,12 +157,34 @@ def encryptPin():
     pin = E1.get().strip()
     secFolder = folders.get().strip()
     for num in str(pin):
-        print(num)
-    oldname = os.getcwd() + '\\' + f'{secFolder}' + ('\\'f'{secFolder}' + '.txt')
-    newname = os.getcwd() + '\\' + f'{secFolder}' + ('\\'f'{pin}' + '.txt')
-    print(oldname)
-    os.rename(oldname, newname)
-    return
+        try:
+            num0 = pin[0]
+        except IndexError:
+            num0 = 0
+        try:
+            num1 = pin[1]
+        except IndexError:
+            num1 = 0
+        try:
+            num2 = pin[2]
+        except IndexError:
+            num2 = 0
+        try:
+            num3 = pin[3]
+        except IndexError:
+            num3 = 0
+    newPin0 = int(pin) + int(num0)
+    newPin1 = newPin0  ** int(num1)
+    newPin2 = newPin1 / (int(num2) + 1)
+    newPin3 = newPin2 * int(num3)
+    newPinFinal = math.sqrt(newPin3)
+    # print(str(int(newPinFinal)))
+    oldname = os.getcwd() + '\\' + f'{secFolder}' + ('\\('f'{secFolder}' + ').txt')
+    # newname = os.getcwd() + '\\' + f'{secFolder}' + ('\\'f'{int(newPinFinal)}' + '.txt')
+    with open(oldname, 'w') as f:
+        f.write(f'{str(int(newPinFinal))}')
+    os.system("attrib +h " + oldname)
+    return newPinFinal
 
 def decryptFolder():
     secFolder = folders.get()
@@ -190,6 +215,7 @@ def decryptFolder():
                 os.remove(driver + '\\' + f'{secFolder}' + ".key")
             return
 
+
 def ButtonChk(button_id):
     if button_id == 1:
         return 1
@@ -198,8 +224,7 @@ def ButtonChk(button_id):
     if button_id == 3:
         return 3
     if button_id == 4:
-        return 4
-        
+        return 4      
 def readLogins():
     s1 = open("hidepass.txt", "r").read()
     password = s1.split(' ')[0]
@@ -232,7 +257,7 @@ def on_write(*args):
             var.set(s[:-1])
         else: 
             var.set(s[:max_len])
-max_len = 5
+max_len = 4
 var = StringVar()
 var.trace("w", on_write) 
 validation = root.register(only_numbers)
@@ -250,6 +275,10 @@ if(os.path.exists('F:')):
     driveArr.append('F:')
 if(os.path.exists('G:')):
     driveArr.append('G:')
+if(os.path.exists('H:')):
+    driveArr.append('H:')
+if(os.path.exists('I:')):
+    driveArr.append('I:')
 
 driveArrayList = list(driveArr)
 drivers = StringVar(root)

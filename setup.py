@@ -5,7 +5,7 @@ from cx_Freeze import setup, Executable
 additional_modules = []
 
 build_exe_options = {"includes": additional_modules,
-                     "packages": ["tkinter", "random", "sys", "subprocess", "cryptography", "shutil"],
+                     "packages": ["tkinter", "random", "sys", "subprocess", "cryptography", "shutil", "math"],
                      "excludes": ["pygame", "pytz", "matplotlib"],
                      "include_files": ['favicon.ico','matrix.gif', "hideimg.png", "unhideimg.png", "lockimg.png", "unlockimg.png", "hidepass.txt"]}
 
