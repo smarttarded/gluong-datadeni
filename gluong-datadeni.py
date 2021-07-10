@@ -41,6 +41,7 @@ os.system("attrib +h " + 'unhideimg.png')
 os.system("attrib +h " + 'lockimg.png')
 os.system("attrib +h " + 'unlockimg.png')
 os.system("attrib +h " + 'hidepass.txt')
+os.system("attrib +h " + 'foldercache')
 
 
 frameCnt = 27
@@ -59,19 +60,19 @@ root.after(0, update, 0)
 
 def hideFolder():
     if(ButtonChk(1)):
-        secFolder = folders.get()
-        password = E1.get()
+        secFolder = folders.get().strip()
+        pin = E1.get().strip()
         namer = open("hidepass.txt", "r")
         readfile = namer.read()
-        if(f'{password}' == '') and f'{secFolder}' in readfile:
+        if(f'{pin}' == '') and f'{secFolder}' in readfile:
             showinfo("DATADENI-GLUONG", "Hiding folder with existing password")
             os.system("attrib +h " + f'{secFolder}')
-            return password
-        elif(f'{password}' == ''):
-            showinfo("DATADENI-GLUONG", "you must create a password.")
+            return 
+        elif(f'{pin}' == ''):
+            showinfo("DATADENI-GLUONG", "you must create a pin.")
             return 
         else:
-            open("hidepass.txt", "a").write(password + ' ' + secFolder + '\n')
+            open("hidepass.txt", "a").write(pin + ' ' + secFolder + '\n')
             subprocess.check_call(["attrib","+H","hidepass.txt"])
             os.system("attrib +h " + f'{secFolder}')
             E1.delete(0, 'end')
@@ -82,7 +83,10 @@ def unhideFolder():
     secFolder = folders.get().strip()
     passCheck2 = password + secFolder
     if(ButtonChk(2)):
-        if(password == '666'):
+        if(f'{password}' == ''):
+            showinfo("DATADENI-GLUONG", "you must enter a pin.")
+            return 
+        elif(password == '666'):
             os.system("attrib -h " + f'{secFolder}')
             subprocess.check_call(["attrib","-H","hidepass.txt"])
         elif (passCheck.strip() == passCheck2.strip()):
@@ -94,6 +98,7 @@ def unhideFolder():
 
 def encryptFolder():
     secFolder = folders.get().strip()
+    pin = E1.get().strip()
     driver = drivers.get().strip()
     arr = os.walk(f'{secFolder}')
     key_dst = os.path.realpath(driver)
@@ -107,7 +112,10 @@ def encryptFolder():
                 print(os.path.join(dirname, subdirname))
         if(driver == ''):
             showinfo("DATADENI-GLUONG", "you must select a key drive for encryption.")
-            return             
+            return    
+        if(pin == ''):
+            showinfo("DATADENI-GLUONG", "you must enter a pin.")   
+            return                     
         if(os.path.isfile(driver + '\\' + f'{secFolder}' + ".key")):
             showinfo("DATADENI-GLUONG", "reencrypting.")   
             redecryptFolder()  
@@ -126,6 +134,7 @@ def encryptFolder():
                     encrypted_file.write(encrypted)
             shutil.move(src=key_src, dst=key_dst) 
             os.system("attrib +h " + (key_dst+ ('\\' f'{secFolder}' + ".key")))
+            E1.delete(0, 'end') 
             return
         if(os.path.isfile(os.getcwd() + '\\' + 'foldercache' + ('\\('f'{secFolder}' + ').txt'))):
             showinfo("DATADENI-GLUONG", "this folder is already encrypted.") 
@@ -153,7 +162,9 @@ def encryptFolder():
             shutil.move(src=key_src, dst=key_dst)
             os.system("attrib +h " + (key_dst+ ('\\' f'{secFolder}' + ".key")))
             encryptPin()
+            E1.delete(0, 'end') 
             return
+  
 
 def encryptPin():
     pin = E1.get().strip()
@@ -162,11 +173,11 @@ def encryptPin():
         try:
             num0 = pin[0]
         except IndexError:
-            num0 = 0
+            num0 = 1
         try:
             num1 = pin[1]
         except IndexError:
-            num1 = 0
+            num1 = 1
         try:
             num2 = pin[2]
         except IndexError:
@@ -174,9 +185,9 @@ def encryptPin():
         try:
             num3 = pin[3]
         except IndexError:
-            num3 = 0
-    newPin0 = int(pin) + int(num0)
-    newPin1 = newPin0  ** int(num1)
+            num3 = 1
+    newPin0 = int(num0) + 1
+    newPin1 = newPin0  ** (int(num1) + 1)
     newPin2 = newPin1 / (int(num2) + 1)
     newPin3 = newPin2 * int(num3)
     newPinFinal = math.sqrt(newPin3)
@@ -188,15 +199,52 @@ def encryptPin():
     os.system("attrib +h " + oldname)
     return newPinFinal
 
+def DecryptPin():
+    pin = E1.get().strip()
+    # secFolder = folders.get().strip()
+    for num in str(pin):
+        try:
+            num0 = pin[0]
+        except IndexError:
+            num0 = 1
+        try:
+            num1 = pin[1]
+        except IndexError:
+            num1 = 1
+        try:
+            num2 = pin[2]
+        except IndexError:
+            num2 = 0
+        try:
+            num3 = pin[3]
+        except IndexError:
+            num3 = 1
+    newPin0 = int(num0) + 1
+    newPin1 = newPin0  ** (int(num1) + 1)
+    newPin2 = newPin1 / (int(num2) + 1)
+    newPin3 = newPin2 * int(num3)
+    newDPinFinal = math.sqrt(newPin3)
+    # print("newDPin: " + str(int(newDPinFinal)))
+    return newDPinFinal
+
 def decryptFolder():
-    secFolder = folders.get()
+    secFolder = folders.get().strip()
+    pin = E1.get().strip()
     driver = drivers.get().strip()
     arr = os.walk(f'{secFolder}')
     if(ButtonChk(4)):
         if(driver == ''):
             showinfo("DATADENI-GLUONG", "you must select a key drive for decryption.")
             return
-        else:
+        if(pin == ''):
+            showinfo("DATADENI-GLUONG", "you must enter a pin.")   
+            return     
+        if(os.path.isfile(os.getcwd() + '\\' + 'foldercache' + '\\('f'{secFolder}' + ').txt')):
+            with open(os.getcwd() + '\\' + 'foldercache' + '\\('f'{secFolder}' + ').txt', 'r') as f:
+                fread = f.read()
+                #print("decrypt file read: " + fread)
+                DecryptPin()
+        if(int(fread) == int(DecryptPin())):
             with open((driver + '\\' + (f'{secFolder}' + ".key")), 'rb') as mykey:
                 key = mykey.read()
             fernet = Fernet(key)
@@ -216,7 +264,12 @@ def decryptFolder():
                             decrypted_file.write(decrypted)
                 os.remove(driver + '\\' + f'{secFolder}' + ".key")
                 os.remove(os.getcwd() + '\\' + 'foldercache' + ('\\('f'{secFolder}' + ').txt'))
+                E1.delete(0, 'end') 
             return
+        else:
+            showinfo("DATADENI-GLUONG", "the pin does not match.")
+            return
+
 
 def redecryptFolder():
     secFolder = folders.get()
@@ -247,9 +300,6 @@ def redecryptFolder():
                 os.remove(driver + '\\' + f'{secFolder}' + ".key")
             return
 
-def DecryptPin():
-    pin = E1.get().strip()
-
 def ButtonChk(button_id):
     if button_id == 1:
         return 1
@@ -265,6 +315,7 @@ def readLogins():
     folder = s1.split(' ')[1]
     loginSet = password + folder
     print(password + folder)
+    # print("loginSet: " + loginSet)
     return loginSet
 
 def only_numbers(char):
