@@ -54,6 +54,7 @@ venv.bak/
 
 #TestFolder
 TestFolder/*
+build/*
 
 #setup.py
 setup.py
