@@ -10,7 +10,7 @@ Added encryption/decyption feature!
 
     All imported libraries should come pre installed with the standard python installation.
   
-    You can also change the .py file extension to .pyw to hide the terminal at runtime, or run python setup.py to create an executable.
+    You can also change the .py file extension to .pyw to hide the terminal at runtime, or run python setup.py build to create an executable.
   </p>
   <p align='center'>
   <img src="https://github.com/smarttarded/gluong-datadeni/blob/main/scrnshot.gif" />
