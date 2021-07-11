@@ -27,6 +27,7 @@ Added encryption/decyption feature.
     To run the program, you can: 
       a. execute python gluong-datadeni.py
       b. execute python setup.py build and run gluong-datadeni.exe in the build folder
+      c. download the zip files in the releases page (current working version 2.0.1)
  
   </p>
 
