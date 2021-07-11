@@ -1,5 +1,8 @@
-Update 6/27/2021
-Added encryption/decyption feature!
+7/10/2021
+Added ability to encrypt/decrypt any folder anywhere.
+
+6/27/2021
+Added encryption/decyption feature.
 
 <p align="center">
   # gluong-datadeni
@@ -12,6 +15,9 @@ Added encryption/decyption feature!
   
     You can also change the .py file extension to .pyw to hide the terminal at runtime.
   </p>
-  <p align='center'>
+  <p align='center' display='text-align:center'>
+  <h1>
+    version 1.0.0
+    </h1>
   <img src="https://github.com/smarttarded/gluong-datadeni/blob/main/scrnshot.gif" />
 </p>
