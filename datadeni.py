@@ -9,21 +9,21 @@ from tkinter.constants import X
 import subprocess
 from cryptography.fernet import Fernet
 import shutil
-import math
 
 #MADE BY [khiem g luong].
 #smarttarded.github.io
 
 root = tk.Tk()
-root.title("DATADENI-GLUONG")
+root.title("DATADENI-2.1.1")
 
 root.geometry("330x350")
 root.eval('tk::PlaceWindow . center')
 
 root.minsize(310, 350)
 root.maxsize(400, 350)
+currentdirectory = os.path.abspath(os.path.curdir)
 
-root.iconbitmap('favicon.ico')
+root.iconbitmap(currentdirectory +'\\' + 'favicon.ico')
 
 def run_once(f):
     def wrapper(*args, **kwargs):
@@ -32,8 +32,6 @@ def run_once(f):
             return f(*args, **kwargs)
     wrapper.has_run = False
     return wrapper
-
-currentdirectory = os.path.abspath(os.path.curdir)
 
 # @run_once 
 # def getRoot():
@@ -55,6 +53,9 @@ os.system("attrib +h " + 'unhideimg.png')
 os.system("attrib +h " + 'lockimg.png')
 os.system("attrib +h " + 'unlockimg.png')
 os.system("attrib +h " + 'hidepass.txt')
+
+if not(os.path.isdir(currentdirectory + '\\' + 'foldercache')):
+    os.mkdir(currentdirectory + '\\' + 'foldercache')
 os.system("attrib +h " + 'foldercache')
 
 
@@ -79,11 +80,11 @@ def hideFolder():
         namer = open("hidepass.txt", "r")
         readfile = namer.read()
         if(f'{pin}' == '') and f'{secFolder}' in readfile:
-            showinfo("DATADENI-GLUONG", "Hiding folder with existing password")
+            showinfo("DATADENI-2.1.1", "Hiding folder with existing password")
             os.system("attrib +h " + f'{secFolder}')
             return 
         elif(f'{pin}' == ''):
-            showinfo("DATADENI-GLUONG", "you must create a pin.")
+            showinfo("DATADENI-2.1.1", "you must create a pin.")
             return 
         else:
             open("hidepass.txt", "a").write(pin + ' ' + secFolder + '\n')
@@ -98,7 +99,7 @@ def unhideFolder():
     passCheck2 = password + secFolder
     if(ButtonChk(2)):
         if(f'{password}' == ''):
-            showinfo("DATADENI-GLUONG", "you must enter a pin.")
+            showinfo("DATADENI-2.1.1", "you must enter a pin.")
             return 
         elif(password == '666'):
             os.system("attrib -h " + f'{secFolder}')
@@ -107,7 +108,7 @@ def unhideFolder():
             os.system("attrib -h " + f'{secFolder}')
             E1.delete(0, 'end')
         else:
-            showinfo("DATADENI-GLUONG", "the password for this folder didn't match.")
+            showinfo("DATADENI-2.1.1", "the password for this folder didn't match.")
             E1.delete(0, 'end')
 
 def encryptPin():
@@ -188,19 +189,19 @@ def encryptFolder():
     key_src = (os.getcwd() + ('\\' f'{secFolder}' + ".key"))
     if(ButtonChk(3)):
         if(secFolder == ''):
-            showinfo("DATADENI-GLUONG", "you must select a folder for encryption.")
+            showinfo("DATADENI-2.1.1", "you must select a folder for encryption.")
             return
         for dirname, dirnames, filenames in arr:
             for subdirname in dirnames:
                 print(os.path.join(dirname, subdirname))
         if(driver == ''):
-            showinfo("DATADENI-GLUONG", "you must select a key drive for encryption.")
+            showinfo("DATADENI-2.1.1", "you must select a key drive for encryption.")
             return    
         if(pin == ''):
-            showinfo("DATADENI-GLUONG", "you must enter a pin.")   
+            showinfo("DATADENI-2.1.1", "you must enter a pin.")   
             return
         if(len(pin) < 5):
-            showinfo("DATADENI-GLUONG", "you must have 5 digits in your pin.")
+            showinfo("DATADENI-2.1.1", "you must have 5 digits in your pin.")
             return
         if(os.path.isfile(driver + '\\' + f'{secFolder}' + ".key")):
             if(os.path.isfile(currentdirectory + '\\' + 'foldercache' + '\\('f'{secFolder}' + ').txt')):
@@ -209,7 +210,7 @@ def encryptFolder():
                     #print("decrypt file read: " + fread)
                     DecryptPin()
             if(int(fread) == int(DecryptPin())):
-                showinfo("DATADENI-GLUONG", "reencrypting.")   
+                showinfo("DATADENI-2.1.1", "reencrypting.")   
                 redecryptFolder()  
                 dirFileCount()
                 key = Fernet.generate_key()
@@ -229,15 +230,15 @@ def encryptFolder():
                 E1.delete(0, 'end') 
                 return
             else:
-                showinfo("DATADENI-GLUONG", "you must enter the correct pin to reencrypt.") 
+                showinfo("DATADENI-2.1.1", "you must enter the correct pin to reencrypt.") 
                 E1.delete(0, 'end') 
                 return
         if(os.path.isfile(currentdirectory + '\\' + 'foldercache' + ('\\('f'{secFolder}' + ').txt'))):
-            showinfo("DATADENI-GLUONG", "this folder is already encrypted.") 
+            showinfo("DATADENI-2.1.1", "this folder is already encrypted.") 
             return
         for drive in driveArr:
             if(os.path.isfile(drive + (f'{secFolder}' + ".key"))):
-                showinfo("DATADENI-GLUONG", "there is already an encryption key in one of the listed drives.")
+                showinfo("DATADENI-2.1.1", "there is already an encryption key in one of the listed drives.")
                 return
         else:
             with open(currentdirectory + ('\\('f'{secFolder}' + ').txt'), 'w') as f:
@@ -268,10 +269,10 @@ def decryptFolder():
     arr = os.walk(f'{secFolder}')
     if(ButtonChk(4)):
         if(driver == ''):
-            showinfo("DATADENI-GLUONG", "you must select a key drive for decryption.")
+            showinfo("DATADENI-2.1.1", "you must select a key drive for decryption.")
             return
         if(pin == ''):
-            showinfo("DATADENI-GLUONG", "you must enter a pin.")   
+            showinfo("DATADENI-2.1.1", "you must enter a pin.")   
             return     
         if(os.path.isfile(currentdirectory + '\\' + 'foldercache' + '\\('f'{secFolder}' + ').txt')):
             with open(currentdirectory + '\\' + 'foldercache' + '\\('f'{secFolder}' + ').txt', 'r') as f:
@@ -299,10 +300,10 @@ def decryptFolder():
                 os.remove(driver + '\\' + f'{secFolder}' + ".key")
                 os.remove(currentdirectory + '\\' + 'foldercache' + ('\\('f'{secFolder}' + ').txt'))
                 E1.delete(0, 'end') 
-                showinfo("DATADENI-GLUONG", "files in " + f'{secFolder}' + " decrypted.")  
+                showinfo("DATADENI-2.1.1", "files in " + f'{secFolder}' + " decrypted.")  
             return
         else:
-            showinfo("DATADENI-GLUONG", "the pin does not match.")
+            showinfo("DATADENI-2.1.1", "the pin does not match.")
             return
 
 
@@ -312,7 +313,7 @@ def redecryptFolder():
     arr = os.walk(f'{secFolder}')
     if(ButtonChk(4)):
         if(driver == ''):
-            showinfo("DATADENI-GLUONG", "you must select a key drive for decryption.")
+            showinfo("DATADENI-2.1.1", "you must select a key drive for decryption.")
             return
         else:
             with open((driver + '\\' + (f'{secFolder}' + ".key")), 'rb') as mykey:
@@ -471,7 +472,7 @@ def progress():
         pb['value'] += 100 / dirFileCount()
         # value_label['text'] = update_progress_label()
     if pb['value'] > 99.9:
-        showinfo("DATADENI-GLUONG", 'encrypted ' + f'{dirFileCount()}' + ' files')
+        showinfo("DATADENI-2.1.1", 'encrypted ' + f'{dirFileCount()}' + ' files')
         pb['value'] = 0
 
 hideimg = tk.PhotoImage(file =currentdirectory + '\\' + 'hideimg.png')
