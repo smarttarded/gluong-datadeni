@@ -1,4 +1,5 @@
 from genericpath import exists
+from posixpath import curdir
 import tkinter as tk
 from tkinter.messagebox import showinfo
 from tkinter import *
@@ -24,11 +25,24 @@ root.maxsize(400, 350)
 
 root.iconbitmap('favicon.ico')
 
-def getImgRoot():
-    path = os.getcwd()
-    return path
+def run_once(f):
+    def wrapper(*args, **kwargs):
+        if not wrapper.has_run:
+            wrapper.has_run = True
+            return f(*args, **kwargs)
+    wrapper.has_run = False
+    return wrapper
 
-bg_img = tk.PhotoImage(file=f'{getImgRoot()}' + '\matrix.gif')
+currentdirectory = os.path.abspath(os.path.curdir)
+
+# @run_once 
+# def getRoot():
+#     path = os.getcwd()
+#     print(path)
+#     return path
+# currentdirectory = getRoot()
+
+bg_img = tk.PhotoImage(file=currentdirectory + '\matrix.gif')
 imglabel = tk.Label(root, image=bg_img)
 
 os.system("attrib +h " + 'favicon.ico')
@@ -45,7 +59,7 @@ os.system("attrib +h " + 'foldercache')
 
 
 frameCnt = 27
-frames = [PhotoImage(file=f'{getImgRoot()}' + '\matrix.gif',format = 'gif -index %i' %(i)) for i in range(frameCnt)]
+frames = [PhotoImage(file=currentdirectory + '\matrix.gif',format = 'gif -index %i' %(i)) for i in range(frameCnt)]
 
 def update(ind):
     frame = frames[ind]
@@ -115,7 +129,10 @@ def encryptFolder():
             return    
         if(pin == ''):
             showinfo("DATADENI-GLUONG", "you must enter a pin.")   
-            return                     
+            return
+        if(len(pin) < 5):
+            showinfo("DATADENI-GLUONG", "you must have 5 digits in your pin.")
+            return
         if(os.path.isfile(driver + '\\' + f'{secFolder}' + ".key")):
             showinfo("DATADENI-GLUONG", "reencrypting.")   
             redecryptFolder()  
@@ -133,10 +150,10 @@ def encryptFolder():
                 with open(os.path.join(dirname, filename), 'wb') as encrypted_file:
                     encrypted_file.write(encrypted)
             shutil.move(src=key_src, dst=key_dst) 
-            os.system("attrib +h " + (key_dst+ ('\\' f'{secFolder}' + ".key")))
+            os.system("attrib +h " + (key_dst + '\\' f'{secFolder}' + ".key"))
             E1.delete(0, 'end') 
             return
-        if(os.path.isfile(os.getcwd() + '\\' + 'foldercache' + ('\\('f'{secFolder}' + ').txt'))):
+        if(os.path.isfile(currentdirectory + '\\' + 'foldercache' + ('\\('f'{secFolder}' + ').txt'))):
             showinfo("DATADENI-GLUONG", "this folder is already encrypted.") 
             return
         for drive in driveArr:
@@ -144,9 +161,9 @@ def encryptFolder():
                 showinfo("DATADENI-GLUONG", "there is already an encryption key in one of the listed drives.")
                 return
         else:
-            with open('(' + f'{secFolder}' + ').txt', 'w') as f:
+            with open(currentdirectory + ('\\('f'{secFolder}' + ').txt'), 'w') as f:
                 f.write('')
-            shutil.move(src=os.getcwd() + ('\\('f'{secFolder}' + ').txt'), dst=os.getcwd() + '\\' + 'foldercache' + ('\\('f'{secFolder}' + ').txt'))
+            shutil.move(src=currentdirectory + ('\\('f'{secFolder}' + ').txt'), dst=currentdirectory + '\\' + 'foldercache' + ('\\('f'{secFolder}' + ').txt'))
             dirFileCount()
             key = Fernet.generate_key()
             with open(f'{secFolder}' + ".key", 'ab') as mykey:
@@ -160,39 +177,42 @@ def encryptFolder():
                 with open(os.path.join(dirname, filename), 'wb') as encrypted_file:
                     encrypted_file.write(encrypted)
             shutil.move(src=key_src, dst=key_dst)
-            os.system("attrib +h " + (key_dst+ ('\\' f'{secFolder}' + ".key")))
+            os.system("attrib +h " + (key_dst + '\\' f'{secFolder}' + ".key"))
             encryptPin()
             E1.delete(0, 'end') 
             return
   
-
 def encryptPin():
     pin = E1.get().strip()
     secFolder = folders.get().strip()
     for num in str(pin):
         try:
             num0 = pin[0]
-        except IndexError:
-            num0 = 1
+        except Exception:
+            num0 = 0
         try:
             num1 = pin[1]
-        except IndexError:
+        except Exception:
             num1 = 1
         try:
             num2 = pin[2]
-        except IndexError:
+        except Exception:
             num2 = 0
         try:
             num3 = pin[3]
-        except IndexError:
+        except Exception:
             num3 = 1
+        try:
+            num4 = pin[4]
+        except Exception:
+            num4 = 0
     newPin0 = int(num0) + 1
-    newPin1 = newPin0  ** (int(num1) + 1)
-    newPin2 = newPin1 / (int(num2) + 1)
-    newPin3 = newPin2 * int(num3)
-    newPinFinal = math.sqrt(newPin3)
+    newPin1 = newPin0  * (int(num1) + 1)
+    newPin2 = newPin1 + int(num2)
+    newPin3 = newPin2 ** (int(num3) + 1)
+    newPinFinal = newPin3 / (int(num4) + 1)
     # print(str(int(newPinFinal)))
-    oldname = os.getcwd() + '\\' + 'foldercache' + ('\\('f'{secFolder}' + ').txt')
+    oldname = currentdirectory + '\\' + 'foldercache' + ('\\('f'{secFolder}' + ').txt')
     # newname = os.getcwd() + '\\' + f'{secFolder}' + ('\\'f'{int(newPinFinal)}' + '.txt')
     with open(oldname, 'w') as f:
         f.write(f'{str(int(newPinFinal))}')
@@ -205,25 +225,29 @@ def DecryptPin():
     for num in str(pin):
         try:
             num0 = pin[0]
-        except IndexError:
-            num0 = 1
+        except Exception:
+            num0 = 0
         try:
             num1 = pin[1]
-        except IndexError:
+        except Exception:
             num1 = 1
         try:
             num2 = pin[2]
-        except IndexError:
+        except Exception:
             num2 = 0
         try:
             num3 = pin[3]
-        except IndexError:
+        except Exception:
             num3 = 1
+        try:
+            num4 = pin[4]
+        except Exception:
+            num4 = 0
     newPin0 = int(num0) + 1
-    newPin1 = newPin0  ** (int(num1) + 1)
-    newPin2 = newPin1 / (int(num2) + 1)
-    newPin3 = newPin2 * int(num3)
-    newDPinFinal = math.sqrt(newPin3)
+    newPin1 = newPin0  * (int(num1) + 1)
+    newPin2 = newPin1 + int(num2)
+    newPin3 = newPin2 ** (int(num3) + 1)
+    newDPinFinal = newPin3 / (int(num4) + 1)
     # print("newDPin: " + str(int(newDPinFinal)))
     return newDPinFinal
 
@@ -239,8 +263,8 @@ def decryptFolder():
         if(pin == ''):
             showinfo("DATADENI-GLUONG", "you must enter a pin.")   
             return     
-        if(os.path.isfile(os.getcwd() + '\\' + 'foldercache' + '\\('f'{secFolder}' + ').txt')):
-            with open(os.getcwd() + '\\' + 'foldercache' + '\\('f'{secFolder}' + ').txt', 'r') as f:
+        if(os.path.isfile(currentdirectory + '\\' + 'foldercache' + '\\('f'{secFolder}' + ').txt')):
+            with open(currentdirectory + '\\' + 'foldercache' + '\\('f'{secFolder}' + ').txt', 'r') as f:
                 fread = f.read()
                 #print("decrypt file read: " + fread)
                 DecryptPin()
@@ -263,8 +287,9 @@ def decryptFolder():
                         with open(os.path.join(dirname, filename), 'wb') as decrypted_file:
                             decrypted_file.write(decrypted)
                 os.remove(driver + '\\' + f'{secFolder}' + ".key")
-                os.remove(os.getcwd() + '\\' + 'foldercache' + ('\\('f'{secFolder}' + ').txt'))
+                os.remove(currentdirectory + '\\' + 'foldercache' + ('\\('f'{secFolder}' + ').txt'))
                 E1.delete(0, 'end') 
+                showinfo("DATADENI-GLUONG", "files in " + f'{secFolder}' + " decrypted.")  
             return
         else:
             showinfo("DATADENI-GLUONG", "the pin does not match.")
@@ -314,7 +339,6 @@ def readLogins():
     password = s1.split(' ')[0]
     folder = s1.split(' ')[1]
     loginSet = password + folder
-    print(password + folder)
     # print("loginSet: " + loginSet)
     return loginSet
 
@@ -324,7 +348,6 @@ def only_numbers(char):
 def getDirectory():
     secFolder = folders.get()
     path = os.path.abspath(f'{secFolder}')
-    print(path)
     return path
             
 def dirFileCount():
@@ -342,7 +365,7 @@ def on_write(*args):
             var.set(s[:-1])
         else: 
             var.set(s[:max_len])
-max_len = 4
+max_len = 5
 var = StringVar()
 var.trace("w", on_write) 
 validation = root.register(only_numbers)
@@ -441,25 +464,25 @@ def progress():
         showinfo("DATADENI-GLUONG", 'encrypted ' + f'{dirFileCount()}' + ' files')
         pb['value'] = 0
 
-hideimg = tk.PhotoImage(file =f'{getImgRoot()}' + '\\' + 'hideimg.png')
+hideimg = tk.PhotoImage(file =currentdirectory + '\\' + 'hideimg.png')
 hidess = hideimg.subsample(6,6)
 Chk1 = tk.Button(root, image = hidess ,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge", command=lambda:[hideFolder(),ButtonChk(1)])
 Chk1.config(height = 32, width = 32)
 Chk1.place(relx=.65, rely = .62)
 
-unhideimg = tk.PhotoImage(file =f'{getImgRoot()}' + '\\' + "unhideimg.png")
+unhideimg = tk.PhotoImage(file =currentdirectory + '\\' + "unhideimg.png")
 unhidess = unhideimg.subsample(6,6)
 Chk2 = tk.Button(root, image = unhidess,bg='#3F3F3F', fg='#37D028', padx=10, pady=5, borderwidth=3, relief="ridge",command=lambda:[unhideFolder(),ButtonChk(2)])
 Chk2.config(height = 32, width = 32)
 Chk2.place(relx=.65, rely = .82)
 
-lockimg = tk.PhotoImage(file =f'{getImgRoot()}' + '\\' + "lockimg.png")
+lockimg = tk.PhotoImage(file =currentdirectory + '\\' + "lockimg.png")
 lockss = lockimg.subsample(6,6)
 Chk1n = tk.Button(root, image=lockss,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge",command=lambda:[encryptFolder(),ButtonChk(3)])
 Chk1n.config(height = 32, width = 32)
 Chk1n.place(relx=.4, rely = .62)
 
-unlockimg = tk.PhotoImage(file =f'{getImgRoot()}' + '\\' + "unlockimg.png")
+unlockimg = tk.PhotoImage(file =currentdirectory + '\\' + "unlockimg.png")
 unlockss = unlockimg.subsample(6,6)
 Chk3 = tk.Button(root, image=unlockss,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge", command=lambda:[decryptFolder(),ButtonChk(4)])
 Chk3.config(height = 32, width = 32)
@@ -475,8 +498,10 @@ def getFolderPath():
     os.chdir(sourcePath)
     directory_contents = os.listdir(folder_selected)
     for item in directory_contents:
-        if os.path.isdir(item):
+        if os.path.isdir(item) and (len(item) < 20):
             dirArray.append(item)
+            # if(len(item) > 10):
+            #     concatitem = item[10:] + '..'
     for f in directory_contents:
         if f.startswith(('__','lib', 'foldercache')):
             dirArray.remove(f)
