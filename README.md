@@ -31,7 +31,7 @@ Added encryption/decyption feature.
   </p>
 
   <div align='center'>
-        <h1 align='center'>2.0.0</h1>
+        <h1 align='center'>2.0.1</h1>
     <img src="https://i.imgur.com/6sAL1gO.gif" />
       <h1 align='center'>1.0.0</h1>
   <img src="https://github.com/smarttarded/gluong-datadeni/blob/main/scrnshot.gif" />
