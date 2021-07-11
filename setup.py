@@ -13,8 +13,8 @@ base = None
 if sys.platform == "win32":
     base = "Win32GUI"
 
-setup(name="gluong-datadeni 2.0.0",
-      version="2.0.0",
+setup(name="gluong-datadeni 2.1.1",
+      version="2.1.1",
       description="hides and encrypts files from folders",
       options={"build_exe": build_exe_options},
-      executables=[Executable(script="gluong-datadeni.py", base=base, icon="favicon.ico")])
+      executables=[Executable(script="datadeni.py", base=base, icon="favicon.ico")])
