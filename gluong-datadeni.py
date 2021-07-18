@@ -9,7 +9,7 @@ from tkinter.constants import X
 import subprocess
 from cryptography.fernet import Fernet
 import shutil
-import math
+from threading import Thread
 
 #MADE BY [khiem g luong].
 #smarttarded.github.io
@@ -179,6 +179,8 @@ def DecryptPin():
     # print("newDPin: " + str(int(newDPinFinal)))
     return newDPinFinal
 
+
+
 def encryptFolder():
     secFolder = folders.get().strip()
     pin = E1.get().strip()
@@ -186,16 +188,20 @@ def encryptFolder():
     arr = os.walk(f'{secFolder}')
     key_dst = os.path.realpath(driver)
     key_src = (os.getcwd() + ('\\' f'{secFolder}' + ".key"))
+
     if(ButtonChk(3)):
         if(secFolder == ''):
             showinfo("DATADENI-GLUONG", "you must select a folder for encryption.")
             return
-        for dirname, dirnames, filenames in arr:
+        for dirname,dirnames, filenames in arr:
             for subdirname in dirnames:
-                print(os.path.join(dirname, subdirname))
+                if(os.path.exists(os.getcwd() + ('\\' f'{secFolder}' + '\\' + subdirname))):
+                    showinfo("DATADENI-GLUONG", "the folder you want to encrypt must only contain files.")
+                    return    
         if(driver == ''):
             showinfo("DATADENI-GLUONG", "you must select a key drive for encryption.")
-            return    
+            return
+
         if(pin == ''):
             showinfo("DATADENI-GLUONG", "you must enter a pin.")   
             return
@@ -261,6 +267,8 @@ def encryptFolder():
             E1.delete(0, 'end') 
             return
 
+thread = Thread(target = encryptFolder)
+
 def decryptFolder():
     secFolder = folders.get().strip()
     pin = E1.get().strip()
@@ -290,9 +298,7 @@ def decryptFolder():
                         print(os.path.join(dirname, subdirname))
                     for filename in filenames:
                         f = open(os.path.join(dirname, filename), 'rb')
-                        original = f.read()
-                        source_path = os.path.join(dirname, filename)
-                        #print("source path: " + source_path)                  
+                        original = f.read()               
                         decrypted = fernet.decrypt(original)
                         with open(os.path.join(dirname, filename), 'wb') as decrypted_file:
                             decrypted_file.write(decrypted)
@@ -305,6 +311,7 @@ def decryptFolder():
             showinfo("DATADENI-GLUONG", "the pin does not match.")
             return
 
+thread1 = Thread(target = decryptFolder)
 
 def redecryptFolder():
     secFolder = folders.get()
@@ -488,13 +495,13 @@ Chk2.place(relx=.65, rely = .82)
 
 lockimg = tk.PhotoImage(file =currentdirectory + '\\' + "lockimg.png")
 lockss = lockimg.subsample(6,6)
-Chk1n = tk.Button(root, image=lockss,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge",command=lambda:[encryptFolder(),ButtonChk(3)])
+Chk1n = tk.Button(root, image=lockss,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge",command=lambda:[thread.start(),ButtonChk(3)])
 Chk1n.config(height = 32, width = 32)
 Chk1n.place(relx=.4, rely = .62)
 
 unlockimg = tk.PhotoImage(file =currentdirectory + '\\' + "unlockimg.png")
 unlockss = unlockimg.subsample(6,6)
-Chk3 = tk.Button(root, image=unlockss,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge", command=lambda:[decryptFolder(),ButtonChk(4)])
+Chk3 = tk.Button(root, image=unlockss,bg='#3F3F3F', fg='#37D028',padx=10, pady=5, borderwidth=3, relief="ridge", command=lambda:[thread1.start(),ButtonChk(4)])
 Chk3.config(height = 32, width = 32)
 Chk3.place(relx=.4, rely = .82)
 
